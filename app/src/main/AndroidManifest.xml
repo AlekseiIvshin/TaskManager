@@ -23,6 +23,17 @@
         <activity android:name=".authentication.NewAccountActivity" />
         <activity android:name=".authentication.LoginActivity" >
         </activity>
+
+        <service
+            android:name=".authentication.AuthenticationService"
+            android:exported="false" >
+            <intent-filter>
+                <action android:name="android.accounts.AccountAuthenticator"/>
+            </intent-filter>
+            <meta-data
+                android:name="android.accounts.AccountAuthenticator"
+                android:resource="@xml/taskmanager_authenticator"/>
+        </service>
     </application>
 
 </manifest>
