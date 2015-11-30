@@ -1,24 +1,49 @@
 package com.alekseiivhsin.taskmanager.authentication;
 
-import android.content.AsyncTaskLoader;
+import android.accounts.AccountManager;
 import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.support.v4.content.AsyncTaskLoader;
+
+import com.alekseiivhsin.taskmanager.R;
 
 /**
  * Created on 25/11/2015.
  */
-public class AuthTokenLoader extends AsyncTaskLoader<String> {
+public class AuthTokenLoader extends AsyncTaskLoader<Intent> {
+    public static final String EXTRA_PASSWORD = "com.alivshin.taskmanager.extras.EXTRA_PASSWORD";
 
-    public static final String signIn(Context context, String accountName, String password){
-        throw new UnsupportedOperationException("Not implemented yet!");
+    private final String mLogin;
+    private final String mPassword;
+
+    public static Bundle buildRequestBundle(String login, String password){
+        final Bundle res = new Bundle();
+        res.putString(AccountManager.KEY_ACCOUNT_NAME, login);
+        res.putString(EXTRA_PASSWORD, password);
+        return res;
     }
 
-    public AuthTokenLoader(Context context) {
+    public AuthTokenLoader(Context context, Bundle args) {
         super(context);
+        mLogin = args.getString(AccountManager.KEY_ACCOUNT_NAME);
+        mPassword = args.getString(EXTRA_PASSWORD);
     }
 
     @Override
-    public String loadInBackground() {
-        throw new UnsupportedOperationException("Not implemented yet!");
+    protected void onStartLoading() {
+        forceLoad();
+    }
+
+    @Override
+    public Intent loadInBackground() {
+        String authtoken = "MOCK";
+        final Intent res = new Intent();
+        res.putExtra(AccountManager.KEY_ACCOUNT_NAME, mLogin);
+        res.putExtra(AccountManager.KEY_ACCOUNT_TYPE, getContext().getString(R.string.accountType));
+        res.putExtra(AccountManager.KEY_AUTHTOKEN, authtoken);
+        res.putExtra(EXTRA_PASSWORD, mPassword);
+        return res;
     }
 
 }

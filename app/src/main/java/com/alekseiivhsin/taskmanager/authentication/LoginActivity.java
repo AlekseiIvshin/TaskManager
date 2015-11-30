@@ -1,12 +1,14 @@
 package com.alekseiivhsin.taskmanager.authentication;
 
+import android.accounts.Account;
 import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.widget.EditText;
 
 import com.alekseiivhsin.taskmanager.R;
@@ -15,10 +17,14 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class LoginActivity extends AppCompatActivity {
+public class LoginActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Intent> {
     private static final String TAG = LoginActivity.class.getSimpleName();
 
     public static final String EXTRA_TOKEN_TYPE = "com.alivshin.taskmanager.extras.EXTRA_TOKEN_TYPE";
+
+    private String mAuthTokenType;
+
+    private static final int AUTH_LOADER_ID = 0;
 
     @Bind(R.id.input_login)
     EditText mLogin;
@@ -32,6 +38,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+        mAuthTokenType = getString(R.string.accountType);
 
         ButterKnife.bind(this);
 
@@ -46,18 +53,8 @@ public class LoginActivity extends AppCompatActivity {
     public void login() {
         String loginName = mLogin.getText().toString();
         String password = mPassword.getText().toString();
-        Log.v(TAG, String.format("Try to sign in with params: login = '%s', password = '%s'", loginName, password));
-        throw new UnsupportedOperationException("Not implemented yet!");
-        // TODO: implement login. Might be used AuthTokenLoader.
-//        setAccountAuthenticatorResult(buildResult(loginName,"stub auth token"));
-    }
 
-    public Bundle buildResult(String login, String authToken){
-        Bundle result = new Bundle();
-        result.putString(AccountManager.KEY_ACCOUNT_NAME, login);
-        result.putString(AccountManager.KEY_ACCOUNT_TYPE, "com.alivshin.taskmanager");
-        result.putString(AccountManager.KEY_AUTHTOKEN, authToken);
-        return result;
+        getSupportLoaderManager().initLoader(AUTH_LOADER_ID, AuthTokenLoader.buildRequestBundle(loginName, password), this);
     }
 
 
@@ -70,11 +67,31 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Sends the result or a Constants.ERROR_CODE_CANCELED error if a result isn't present.
      */
-    public void finish() {
-        if (mAuthenticatorDelegate != null) {
-            mAuthenticatorDelegate.putResultsToAuthenticator();
-        }
-        super.finish();
+    public void finishLogin(Intent responseData) {
+        String login = responseData.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+        String password = responseData.getStringExtra(AuthTokenLoader.EXTRA_PASSWORD);
+        final Account account = new Account(login, mAuthTokenType);
+        String authToken = responseData.getStringExtra(AccountManager.KEY_AUTHTOKEN);
+        AccountManager accountManager = AccountManager.get(this);
+        accountManager.addAccountExplicitly(account, password, null);
+        accountManager.setAuthToken(account, mAuthTokenType, authToken);
+        setResult(RESULT_OK,responseData);
+        finish();
+    }
+
+    @Override
+    public Loader<Intent> onCreateLoader(int id, Bundle args) {
+        return new AuthTokenLoader(this, args);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Intent> loader, Intent data) {
+        finishLogin(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Intent> loader) {
+
     }
 
     private class AuthenticatorDelegate {
