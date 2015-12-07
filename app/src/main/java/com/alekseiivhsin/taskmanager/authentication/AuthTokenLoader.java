@@ -6,8 +6,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
 
-import com.alekseiivhsin.taskmanager.R;
-
 /**
  * Created on 25/11/2015.
  */
@@ -16,10 +14,12 @@ public class AuthTokenLoader extends AsyncTaskLoader<Intent> {
 
     private final String mLogin;
     private final String mPassword;
+    private final String mAccountType;
 
-    public static Bundle buildRequestBundle(String login, String password){
+    public static Bundle buildRequestBundle(String login, String password, String accountType) {
         final Bundle res = new Bundle();
         res.putString(AccountManager.KEY_ACCOUNT_NAME, login);
+        res.putString(AccountManager.KEY_ACCOUNT_TYPE, accountType);
         res.putString(EXTRA_PASSWORD, password);
         return res;
     }
@@ -28,6 +28,7 @@ public class AuthTokenLoader extends AsyncTaskLoader<Intent> {
         super(context);
         mLogin = args.getString(AccountManager.KEY_ACCOUNT_NAME);
         mPassword = args.getString(EXTRA_PASSWORD);
+        mAccountType = args.getString(AccountManager.KEY_ACCOUNT_TYPE);
     }
 
     @Override
@@ -37,13 +38,24 @@ public class AuthTokenLoader extends AsyncTaskLoader<Intent> {
 
     @Override
     public Intent loadInBackground() {
-        String authtoken = "MOCK";
         final Intent res = new Intent();
         res.putExtra(AccountManager.KEY_ACCOUNT_NAME, mLogin);
-        res.putExtra(AccountManager.KEY_ACCOUNT_TYPE, getContext().getString(R.string.accountType));
-        res.putExtra(AccountManager.KEY_AUTHTOKEN, authtoken);
+        res.putExtra(AccountManager.KEY_ACCOUNT_TYPE, mAccountType);
+        res.putExtra(AccountManager.KEY_AUTHTOKEN, stubGetAuthToken(mLogin));
+        res.putExtra(AuthHelper.USER_TYPE, stubUserTypeByLogin(mLogin));
         res.putExtra(EXTRA_PASSWORD, mPassword);
         return res;
     }
 
+
+    public static String stubUserTypeByLogin(String login){
+        if("LEAD".equalsIgnoreCase(login)){
+            return UserTypes.POOL_LEAD;
+        }
+        return UserTypes.POOL_MEMBER;
+    }
+
+    public static String stubGetAuthToken(String login){
+        return login;
+    }
 }
