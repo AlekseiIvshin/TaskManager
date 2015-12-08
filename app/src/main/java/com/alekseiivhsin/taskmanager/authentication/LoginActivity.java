@@ -49,6 +49,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         getSupportLoaderManager().initLoader(AUTH_LOADER_ID, AuthTokenLoader.buildRequestBundle(loginName, password, getString(R.string.accountType)), this);
     }
 
+    @Override
+    public Loader<Intent> onCreateLoader(int id, Bundle args) {
+        return new AuthTokenLoader(this, args);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Intent> loader, Intent data) {
+        finishLogin(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Intent> loader) {
+
+    }
+
     /**
      * Sends the result or a Constants.ERROR_CODE_CANCELED error if a result isn't present.
      */
@@ -64,20 +79,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         finish();
     }
 
-    @Override
-    public Loader<Intent> onCreateLoader(int id, Bundle args) {
-        return new AuthTokenLoader(this, args);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Intent> loader, Intent data) {
-        finishLogin(data);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Intent> loader) {
-
-    }
 
     public final void loadResponse() {
         AccountAuthenticatorResponse accountAuthenticatorResponse
