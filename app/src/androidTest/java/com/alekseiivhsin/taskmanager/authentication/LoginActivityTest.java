@@ -8,11 +8,13 @@ import android.support.test.runner.AndroidJUnit4;
 import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.R;
 import com.alekseiivhsin.taskmanager.ioc.MockAuthModule;
+import com.alekseiivhsin.taskmanager.ioc.MockTaskListModule;
 import com.alekseiivhsin.taskmanager.ioc.MockedGraph;
 import com.alekseiivhsin.taskmanager.model.LoginResult;
 
 import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -26,6 +28,7 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withInputType;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static android.text.InputType.TYPE_CLASS_TEXT;
 import static android.text.InputType.TYPE_TEXT_VARIATION_PASSWORD;
 import static org.hamcrest.core.AllOf.allOf;
@@ -64,19 +67,18 @@ public class LoginActivityTest {
     @Test
     public void loginClick_shouldRequirePasswordWhenPasswordIsEmpty() {
         // Given
-        ViewInteraction login = onView(withId(R.id.input_login));
-        ViewInteraction password = onView(withId(R.id.input_password));
+        ViewInteraction password = onView(withId(R.id.input_layout_password));
 
         LoginResult stubLoginResult = new LoginResult();
         stubLoginResult.authToken="STUB!";
         when(mMockAuthModule.mockAuthService.login(anyString(), anyString(), anyString())).thenReturn(stubLoginResult);
 
         // When
-        login.perform(typeText("LoginWithEmptyPassword"));
+        onView(withId(R.id.input_login)).perform(typeText("LoginWithEmptyPassword"));
         onView(withId(R.id.login)).perform(click());
 
         // Then
-        verify(mMockAuthModule.mockAuthService,times(0)).login(anyString(),anyString(),anyString());
-        password.check(matches(withHint(Matchers.containsString("Wrong password"))));
+        verify(mMockAuthModule.mockAuthService, times(0)).login(anyString(),anyString(),anyString());
+        password.check(matches(withText(Matchers.containsString("Password is empty!"))));
     }
 }

@@ -4,6 +4,7 @@ import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
@@ -26,8 +27,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     @Bind(R.id.input_login)
     EditText mLogin;
 
+    @Bind(R.id.input_layout_login)
+    TextInputLayout mLoginInputLayout;
+
     @Bind(R.id.input_password)
     EditText mPassword;
+
+    @Bind(R.id.input_layout_password)
+    TextInputLayout mPasswordInputLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +53,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         String loginName = mLogin.getText().toString();
         String password = mPassword.getText().toString();
 
-        getSupportLoaderManager().initLoader(AUTH_LOADER_ID, AuthTokenLoader.buildRequestBundle(loginName, password, getString(R.string.accountType)), this);
+        if(validateInputFields()) {
+            getSupportLoaderManager().initLoader(AUTH_LOADER_ID, AuthTokenLoader.buildRequestBundle(loginName, password, getString(R.string.accountType)), this);
+        }
     }
 
     @Override
@@ -62,6 +71,34 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     @Override
     public void onLoaderReset(Loader<Intent> loader) {
 
+    }
+
+    public boolean validateInputFields(){
+        boolean isValid = validateLogin();
+        isValid = isValid & validatePassword();
+        return isValid;
+    }
+
+    public boolean validateLogin(){
+        String loginName = mLogin.getText().toString();
+        if(loginName.isEmpty()){
+            mLoginInputLayout.setError(getString(R.string.error_login_empty));
+            return false;
+        }
+
+        // TODO: add other validations as login mask, login length and etc
+        return true;
+    }
+
+    public boolean validatePassword(){
+        String password = mPassword.getText().toString();
+        if(password.isEmpty()){
+            mPasswordInputLayout.setError(getString(R.string.error_password_empty));
+            return false;
+        }
+
+        // TODO: add other validations as login mask, login length and etc
+        return true;
     }
 
     /**

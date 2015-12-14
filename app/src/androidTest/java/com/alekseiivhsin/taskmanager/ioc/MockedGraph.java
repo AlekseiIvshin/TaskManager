@@ -14,8 +14,11 @@ import dagger.Component;
 public interface MockedGraph extends Graph{
 
     final class MockedInitializer {
-        public static Graph init(MockAuthModule mockAuthModule) {
-            return DaggerGraph.builder().authModule(mockAuthModule).build();
+        public static Graph init(MockAuthModule mockModule) {
+            return DaggerGraph.builder().authModule(mockModule).build();
+        }
+        public static Graph init(MockTaskListModule mockModule) {
+            return DaggerGraph.builder().taskListModule(mockModule).build();
         }
     }
 }
