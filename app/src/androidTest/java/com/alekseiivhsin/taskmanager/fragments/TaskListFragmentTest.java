@@ -65,7 +65,6 @@ public class TaskListFragmentTest {
     @Test
     public void onLoad_shouldLoadWithoutErrors() {
         // Given
-        junit.framework.Assert.assertTrue(true);
     }
 
 }

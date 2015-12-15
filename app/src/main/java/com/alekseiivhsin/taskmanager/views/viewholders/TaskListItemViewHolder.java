@@ -12,12 +12,12 @@ import butterknife.ButterKnife;
 /**
  * Created on 14/12/2015.
  */
-public class TaskListViewHolder extends RecyclerView.ViewHolder {
+public class TaskListItemViewHolder extends RecyclerView.ViewHolder {
 
     @Bind(R.id.task_name)
     TextView mTaskName;
 
-    public TaskListViewHolder(View itemView) {
+    public TaskListItemViewHolder(View itemView) {
         super(itemView);
         ButterKnife.bind(this, itemView);
     }

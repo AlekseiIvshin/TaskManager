@@ -7,12 +7,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alekseiivhsin.taskmanager.R;
-import com.alekseiivhsin.taskmanager.views.viewholders.TaskListViewHolder;
+import com.alekseiivhsin.taskmanager.views.viewholders.TaskListItemViewHolder;
 
 /**
  * Created on 14/12/2015.
  */
-public class TaskListAdapter extends RecyclerView.Adapter<TaskListViewHolder> {
+public class TaskListAdapter extends RecyclerView.Adapter<TaskListItemViewHolder> {
 
     Cursor mCursor;
 
@@ -21,13 +21,13 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListViewHolder> {
     }
 
     @Override
-    public TaskListViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public TaskListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View rootView = LayoutInflater.from(parent.getContext()).inflate(R.layout.listitem_task, parent, false);
-        return new TaskListViewHolder(rootView);
+        return new TaskListItemViewHolder(rootView);
     }
 
     @Override
-    public void onBindViewHolder(TaskListViewHolder holder, int position) {
+    public void onBindViewHolder(TaskListItemViewHolder holder, int position) {
         if (!mCursor.moveToPosition(position)) {
             throw new IllegalStateException(" Couldn't move cursor to position " + position);
         }
@@ -41,7 +41,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListViewHolder> {
         }
         return 0;
     }
-
     public void changeCursor(Cursor newCursor) {
         Cursor oldCursor = swapCursor(newCursor);
         if (oldCursor != null) {
