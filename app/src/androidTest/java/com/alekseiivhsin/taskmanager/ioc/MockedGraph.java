@@ -17,8 +17,5 @@ public interface MockedGraph extends Graph{
         public static Graph init(MockAuthModule mockModule) {
             return DaggerGraph.builder().authModule(mockModule).build();
         }
-        public static Graph init(MockTaskListModule mockModule) {
-            return DaggerGraph.builder().taskListModule(mockModule).build();
-        }
     }
 }

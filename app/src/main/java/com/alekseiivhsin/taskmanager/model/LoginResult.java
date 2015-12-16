@@ -13,7 +13,7 @@ public class LoginResult {
     @JsonProperty("refresh_token")
     public String refreshToken;
     @JsonProperty("user_type")
-    public String userType;
+    public int userRights;
     @JsonProperty("expires_in")
     public int expiresIn;
 }

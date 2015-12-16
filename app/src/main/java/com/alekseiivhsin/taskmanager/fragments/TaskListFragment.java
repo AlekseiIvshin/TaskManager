@@ -1,21 +1,21 @@
 package com.alekseiivhsin.taskmanager.fragments;
 
-import android.database.Cursor;
+import android.accounts.Account;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.LinearLayout;
 
 import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.R;
+import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
+import com.alekseiivhsin.taskmanager.authentication.UserRights;
 import com.alekseiivhsin.taskmanager.views.adapters.TaskListAdapter;
 
 import javax.inject.Inject;
@@ -26,58 +26,57 @@ import butterknife.ButterKnife;
 public class TaskListFragment extends Fragment {
 
     public static final int TASK_LIST_LOADER_ID = 0;
+    private static final String TAG = TaskListFragment.class.getSimpleName();
 
     @Bind(R.id.list_tasks)
     RecyclerView mTasksList;
 
     @Bind(R.id.add_new_task)
-    Button mAddNewTask;
+    FloatingActionButton mAddNewTask;
+
+    TaskListAdapter mTaskListAdapter;
+
+    @Inject
+    AuthHelper mAuthHelper;
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        App.getObjectGraphInstance().inject(this);
+    }
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_task_list, container, false);
-
         ButterKnife.bind(this, rootView);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
 
-        TaskListAdapter taskListAdapter = new TaskListAdapter(null);
+        mTaskListAdapter = new TaskListAdapter();
         mTasksList.setLayoutManager(layoutManager);
-        mTasksList.setAdapter(taskListAdapter);
+        mTasksList.setAdapter(mTaskListAdapter);
 
-        TaskListCursorLoader taskListCursorLoader = new TaskListCursorLoader(taskListAdapter);
-        getLoaderManager().initLoader(TASK_LIST_LOADER_ID, new Bundle(), taskListCursorLoader);
+        if (!isNeedShowNewTaskButton()) {
+            mAddNewTask.setVisibility(View.GONE);
+        }
 
         return rootView;
     }
 
-    public static class TaskListCursorLoader implements LoaderManager.LoaderCallbacks<Cursor> {
+    protected boolean isNeedShowNewTaskButton() {
+        Account[] accounts = mAuthHelper.getAccounts();
 
-        private final TaskListAdapter mAdapter;
-
-        @Inject
-        Loader<Cursor> mCursorLoader;
-
-        public TaskListCursorLoader(TaskListAdapter taskListAdapter) {
-            mAdapter = taskListAdapter;
+        Log.v(TAG, "Accounts count = " + accounts.length);
+        for (Account account : accounts) {
+            if (mAuthHelper.hasAccountRights(account, UserRights.CAN_CREATE_TASK)) {
+                Log.v(TAG, "There is account with need rights: UserRights.CAN_CREATE_TASK=" + UserRights.CAN_CREATE_TASK);
+                return true;
+            }
+            Log.v(TAG, String.format("Account %s, rights = %d don't has need rights: UserRights.CAN_CREATE_TASK = %d", account, mAuthHelper.getUserRights(account), UserRights.CAN_CREATE_TASK));
         }
-
-        @Override
-        public Loader<Cursor> onCreateLoader(int id, Bundle args) {
-            App.getObjectGraphInstance().inject(this);
-            return mCursorLoader;
-        }
-
-        @Override
-        public void onLoadFinished(Loader<Cursor> loader, Cursor newCursor) {
-            mAdapter.changeCursor(newCursor);
-        }
-
-        @Override
-        public void onLoaderReset(Loader<Cursor> loader) {
-            mAdapter.changeCursor(null);
-        }
+        Log.v(TAG, "There is not account with need rights: UserRights.CAN_CREATE_TASK=" + UserRights.CAN_CREATE_TASK);
+        return false;
     }
 
 }

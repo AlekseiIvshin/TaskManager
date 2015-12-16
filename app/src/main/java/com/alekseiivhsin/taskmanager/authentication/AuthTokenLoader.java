@@ -54,7 +54,7 @@ public class AuthTokenLoader extends AsyncTaskLoader<Intent> {
         res.putExtra(AccountManager.KEY_ACCOUNT_NAME, mUserName);
         res.putExtra(AccountManager.KEY_ACCOUNT_TYPE, mAccountType);
         res.putExtra(AccountManager.KEY_AUTHTOKEN, loginResult.authToken);
-        res.putExtra(AuthHelper.USER_TYPE, loginResult.userType);
+        res.putExtra(AuthHelper.USER_RIGHTS, loginResult.userRights);
         res.putExtra(EXTRA_PASSWORD, mPassword);
         return res;
     }

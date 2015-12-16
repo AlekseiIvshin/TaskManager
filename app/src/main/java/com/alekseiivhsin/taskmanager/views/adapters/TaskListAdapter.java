@@ -1,6 +1,5 @@
 package com.alekseiivhsin.taskmanager.views.adapters;
 
-import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,16 +8,14 @@ import android.view.ViewGroup;
 import com.alekseiivhsin.taskmanager.R;
 import com.alekseiivhsin.taskmanager.views.viewholders.TaskListItemViewHolder;
 
+import java.util.List;
+
 /**
  * Created on 14/12/2015.
  */
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListItemViewHolder> {
 
-    Cursor mCursor;
-
-    public TaskListAdapter(Cursor cursor) {
-        this.mCursor = cursor;
-    }
+    List<String> tasksList;
 
     @Override
     public TaskListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -28,34 +25,14 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListItemViewHolder
 
     @Override
     public void onBindViewHolder(TaskListItemViewHolder holder, int position) {
-        if (!mCursor.moveToPosition(position)) {
-            throw new IllegalStateException(" Couldn't move cursor to position " + position);
-        }
-        holder.setContent(mCursor.getString(mCursor.getColumnIndex("task_name")));
+        holder.setContent(tasksList.get(position));
     }
 
     @Override
     public int getItemCount() {
-        if (mCursor != null) {
-            return mCursor.getCount();
+        if (tasksList != null) {
+            return tasksList.size();
         }
         return 0;
-    }
-    public void changeCursor(Cursor newCursor) {
-        Cursor oldCursor = swapCursor(newCursor);
-        if (oldCursor != null) {
-            oldCursor.close();
-        }
-    }
-
-    private Cursor swapCursor(Cursor newCursor) {
-        if (newCursor == mCursor) {
-            return null;
-        }
-
-        final Cursor oldCursor = mCursor;
-        mCursor = newCursor;
-        notifyDataSetChanged();
-        return oldCursor;
     }
 }

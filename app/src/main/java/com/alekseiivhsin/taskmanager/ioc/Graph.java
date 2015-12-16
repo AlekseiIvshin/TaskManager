@@ -1,5 +1,8 @@
 package com.alekseiivhsin.taskmanager.ioc;
 
+import android.app.Application;
+
+import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.authentication.AuthTokenLoader;
 import com.alekseiivhsin.taskmanager.fragments.TaskListFragment;
 
@@ -13,17 +16,16 @@ import dagger.Component;
 @Singleton
 @Component(
         modules = {
-                AuthModule.class,
-                TaskListModule.class})
+                AuthModule.class})
 public interface Graph {
 
     void inject(AuthTokenLoader authTokenLoader);
 
-    void inject(TaskListFragment.TaskListCursorLoader taskListCursorLoader);
+    void inject(TaskListFragment taskListFragment);
 
     final class Initializer {
-        public static Graph init() {
-            return DaggerGraph.builder().authModule(new AuthModule()).taskListModule(new TaskListModule()).build();
+        public static Graph init(Application app) {
+            return DaggerGraph.builder().authModule(new AuthModule(app)).build();
         }
     }
 }

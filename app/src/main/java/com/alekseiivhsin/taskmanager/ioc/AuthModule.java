@@ -1,5 +1,9 @@
 package com.alekseiivhsin.taskmanager.ioc;
 
+import android.app.Application;
+
+import com.alekseiivhsin.taskmanager.App;
+import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
 import com.alekseiivhsin.taskmanager.network.AuthService;
 
 import javax.inject.Singleton;
@@ -15,7 +19,13 @@ import retrofit.Retrofit;
 @Module
 public class AuthModule {
 
+    private final Application mApp;
+
     private static final String BASE_URL = "http://localhost/";
+
+    public AuthModule(Application application) {
+        mApp = application;
+    }
 
     @Provides
     public AuthService provideAuthService(Retrofit retrofit) {
@@ -24,9 +34,14 @@ public class AuthModule {
 
     @Provides
     @Singleton
-    public Retrofit provideRetrofit(){
+    public Retrofit provideRetrofit() {
         return new Retrofit.Builder()
                 .baseUrl(BASE_URL)
                 .build();
+    }
+
+    @Provides
+    public AuthHelper provideAuthHelper() {
+        return AuthHelper.get(mApp.getApplicationContext());
     }
 }

@@ -18,7 +18,7 @@ public class App extends Application {
         super.onCreate();
 
         mAppInstance = this;
-        mObjectGraph = Graph.Initializer.init();
+        mObjectGraph = Graph.Initializer.init(this);
     }
 
     public Graph getObjectGraph(){

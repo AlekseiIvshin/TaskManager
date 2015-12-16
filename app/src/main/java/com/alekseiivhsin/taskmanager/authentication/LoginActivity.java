@@ -53,7 +53,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         String loginName = mLogin.getText().toString();
         String password = mPassword.getText().toString();
 
-        if(validateInputFields()) {
+        if (validateInputFields()) {
             getSupportLoaderManager().initLoader(AUTH_LOADER_ID, AuthTokenLoader.buildRequestBundle(loginName, password, getString(R.string.accountType)), this);
         }
     }
@@ -73,15 +73,15 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
     }
 
-    public boolean validateInputFields(){
+    public boolean validateInputFields() {
         boolean isValid = validateLogin();
         isValid = isValid & validatePassword();
         return isValid;
     }
 
-    public boolean validateLogin(){
+    public boolean validateLogin() {
         String loginName = mLogin.getText().toString();
-        if(loginName.isEmpty()){
+        if (loginName.isEmpty()) {
             mLoginInputLayout.setError(getString(R.string.error_login_empty));
             return false;
         }
@@ -90,9 +90,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
         return true;
     }
 
-    public boolean validatePassword(){
+    public boolean validatePassword() {
         String password = mPassword.getText().toString();
-        if(password.isEmpty()){
+        if (password.isEmpty()) {
             mPasswordInputLayout.setError(getString(R.string.error_password_empty));
             return false;
         }
@@ -107,10 +107,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     public void finishLogin(Intent responseData) {
         String login = responseData.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
         String password = responseData.getStringExtra(AuthTokenLoader.EXTRA_PASSWORD);
-        String userType = responseData.getStringExtra(AuthHelper.USER_TYPE);
+        int userRights = responseData.getIntExtra(AuthHelper.USER_RIGHTS, UserRights.NONE);
         String authToken = responseData.getStringExtra(AccountManager.KEY_AUTHTOKEN);
 
-        AuthHelper.get(this).addAccount(login, password, userType, authToken, getString(R.string.accountType));
+        AuthHelper.get(this).addAccount(login, password, userRights, authToken);
 
         setResult(RESULT_OK, responseData);
         finish();
