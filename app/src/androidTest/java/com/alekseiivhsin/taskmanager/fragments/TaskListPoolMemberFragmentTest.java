@@ -25,13 +25,15 @@ import static org.mockito.Mockito.when;
 @RunWith(AndroidJUnit4.class)
 public class TaskListPoolMemberFragmentTest extends BaseTaskListFragmentTest {
 
-    Account[] stubAccountArray = {new Account(STUB_LOGIN,STUB_TYPE)};
+    Account stubAccount = new Account(STUB_LOGIN,STUB_TYPE);
+
+    Account[] stubAccountArray = {stubAccount};
 
     @Override
     public void onAddAccount() {
         when(mMockAuthModule.mockAuthHelper.getAccounts()).thenReturn(stubAccountArray);
-        when(mMockAuthModule.mockAuthHelper.getUserRights(any(Account.class))).thenReturn(POOL_MEMBER_RIGHTS);
-        when(mMockAuthModule.mockAuthHelper.hasAccountRights(any(Account.class), UserRights.CAN_CREATE_TASK)).thenReturn(false);
+        when(mMockAuthModule.mockAuthHelper.getUserRights(stubAccount)).thenReturn(POOL_MEMBER_RIGHTS);
+        when(mMockAuthModule.mockAuthHelper.hasAccountRights(stubAccount, UserRights.CAN_CREATE_TASK)).thenReturn(false);
     }
 
 
