@@ -21,8 +21,6 @@ public class AuthModule {
 
     private final Application mApp;
 
-    private static final String BASE_URL = "http://localhost/";
-
     public AuthModule(Application application) {
         mApp = application;
     }
@@ -30,14 +28,6 @@ public class AuthModule {
     @Provides
     public AuthService provideAuthService(Retrofit retrofit) {
         return retrofit.create(AuthService.class);
-    }
-
-    @Provides
-    @Singleton
-    public Retrofit provideRetrofit() {
-        return new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .build();
     }
 
     @Provides

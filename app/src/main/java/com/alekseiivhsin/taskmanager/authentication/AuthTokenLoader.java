@@ -7,7 +7,7 @@ import android.os.Bundle;
 import android.support.v4.content.AsyncTaskLoader;
 
 import com.alekseiivhsin.taskmanager.App;
-import com.alekseiivhsin.taskmanager.model.LoginResult;
+import com.alekseiivhsin.taskmanager.network.models.LoginResponse;
 import com.alekseiivhsin.taskmanager.network.AuthService;
 
 import javax.inject.Inject;
@@ -48,13 +48,13 @@ public class AuthTokenLoader extends AsyncTaskLoader<Intent> {
 
     @Override
     public Intent loadInBackground() {
-        LoginResult loginResult = mAuthService.login(mUserName, mPassword, mAccountType);
+        LoginResponse loginResponse = mAuthService.login(mUserName, mPassword, mAccountType);
 
         final Intent res = new Intent();
         res.putExtra(AccountManager.KEY_ACCOUNT_NAME, mUserName);
         res.putExtra(AccountManager.KEY_ACCOUNT_TYPE, mAccountType);
-        res.putExtra(AccountManager.KEY_AUTHTOKEN, loginResult.authToken);
-        res.putExtra(AuthHelper.USER_RIGHTS, loginResult.userRights);
+        res.putExtra(AccountManager.KEY_AUTHTOKEN, loginResponse.authToken);
+        res.putExtra(AuthHelper.USER_RIGHTS, loginResponse.userRights);
         res.putExtra(EXTRA_PASSWORD, mPassword);
         return res;
     }

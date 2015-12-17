@@ -36,9 +36,8 @@ public class TaskListPoolMemberFragmentTest extends BaseTaskListFragmentTest {
         when(mMockAuthModule.mockAuthHelper.hasAccountRights(stubAccount, UserRights.CAN_CREATE_TASK)).thenReturn(false);
     }
 
-
     @Test
-    public void onLoad_shouldEnableAddsNewTaskWhenUserIsPoolLead() {
+    public void onLoad_shouldDisableAddsNewTaskWhenUserIsPoolMember() {
         onView(withId(R.id.add_new_task)).check(matches(not(isDisplayed())));
     }
 }
