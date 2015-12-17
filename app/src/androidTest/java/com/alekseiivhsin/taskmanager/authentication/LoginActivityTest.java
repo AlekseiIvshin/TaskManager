@@ -7,7 +7,7 @@ import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.R;
 import com.alekseiivhsin.taskmanager.ioc.MockAuthModule;
 import com.alekseiivhsin.taskmanager.ioc.MockedGraph;
-import com.alekseiivhsin.taskmanager.model.LoginResult;
+import com.alekseiivhsin.taskmanager.model.LoginResponse;
 
 import org.junit.Before;
 import org.junit.Ignore;
@@ -61,9 +61,9 @@ public class LoginActivityTest {
     @Test
     public void loginClick_shouldNotRequestAuthWhenPasswordIsEmpty() {
         // Given
-        LoginResult stubLoginResult = new LoginResult();
-        stubLoginResult.authToken = "STUB!";
-        when(mMockAuthModule.mockAuthService.login(anyString(), anyString(), anyString())).thenReturn(stubLoginResult);
+        LoginResponse stubLoginResponse = new LoginResponse();
+        stubLoginResponse.authToken = "STUB!";
+        when(mMockAuthModule.mockAuthService.login(anyString(), anyString(), anyString())).thenReturn(stubLoginResponse);
 
         // When
         onView(withId(R.id.input_login)).perform(typeText("LoginWithEmptyPassword"));

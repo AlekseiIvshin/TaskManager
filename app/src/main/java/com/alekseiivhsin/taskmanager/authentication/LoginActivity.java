@@ -11,16 +11,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.widget.EditText;
 
+import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.R;
+import com.alekseiivhsin.taskmanager.network.AuthService;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class LoginActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Intent> {
-    private static final String TAG = LoginActivity.class.getSimpleName();
 
-    public static final String EXTRA_TOKEN_TYPE = "com.alivshin.taskmanager.extras.EXTRA_TOKEN_TYPE";
+    public static final String EXTRA_TOKEN_TYPE = "taskmanager.extras.EXTRA_TOKEN_TYPE";
 
     private static final int AUTH_LOADER_ID = 0;
 
@@ -45,6 +48,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+
         loadResponse();
     }
 

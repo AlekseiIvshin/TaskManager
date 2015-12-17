@@ -1,6 +1,5 @@
-package com.alekseiivhsin.taskmanager.fragments;
+package com.alekseiivhsin.taskmanager.fragments.taskdetails;
 
-import android.accounts.Account;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v7.app.AppCompatActivity;
@@ -8,12 +7,12 @@ import android.support.v7.app.AppCompatActivity;
 import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.MainActivity;
 import com.alekseiivhsin.taskmanager.R;
-import com.alekseiivhsin.taskmanager.authentication.UserRights;
+import com.alekseiivhsin.taskmanager.fragments.BaseAlreadyLoggedTest;
+import com.alekseiivhsin.taskmanager.fragments.TaskListFragment;
 import com.alekseiivhsin.taskmanager.ioc.MockAuthModule;
 import com.alekseiivhsin.taskmanager.ioc.MockedGraph;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
 
@@ -21,18 +20,9 @@ import org.junit.runner.RunWith;
  * Created on 14/12/2015.
  */
 @RunWith(AndroidJUnit4.class)
-public abstract class BaseTaskListFragmentTest {
+public abstract class TaskDetailsFragmentTest extends BaseAlreadyLoggedTest {
 
-    protected int POOL_LEAD_RIGHTS = UserRights.CAN_VIEW_TASK | UserRights.CAN_UPDATE_TASK | UserRights.CAN_CREATE_TASK | UserRights.CAN_CLOSE_TASK;
-    protected int POOL_MEMBER_RIGHTS = UserRights.CAN_VIEW_TASK | UserRights.CAN_UPDATE_TASK;
-
-
-    public static final String TASK_LIST_TAG = "taskmanager.fragments.TASK_LIST_TAG";
-
-    public static final String STUB_LOGIN = "STUB_LOGIN";
-    public static final String STUB_PASSWORD = "STUB_PASSWORD";
-    public static final String STUB_AUTH_TOKEN = "STUB_AUTH_TOKEN";
-    public static final String STUB_TYPE = "STUB_TYPE";
+    private static final String TASK_DETAILS_TAG = "TASK_DETAILS_TAG";
 
     protected AppCompatActivity mActivity;
 
@@ -41,12 +31,6 @@ public abstract class BaseTaskListFragmentTest {
             = new ActivityTestRule<>(MainActivity.class);
 
     protected MockAuthModule mMockAuthModule;
-
-    @BeforeClass
-    public static void init() {
-        App.getInstance()
-                .setObjectGraph(MockedGraph.MockedInitializer.init(new MockAuthModule(App.getInstance())));
-    }
 
     @Before
     public void setUp() {
@@ -58,7 +42,7 @@ public abstract class BaseTaskListFragmentTest {
         mActivity
                 .getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container, new TaskListFragment(), TASK_LIST_TAG)
+                .replace(R.id.fragment_container, new TaskListFragment(), TASK_DETAILS_TAG)
                 .addToBackStack(null)
                 .commit();
     }

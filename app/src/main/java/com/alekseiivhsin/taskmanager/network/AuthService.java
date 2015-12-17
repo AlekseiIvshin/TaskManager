@@ -1,6 +1,6 @@
 package com.alekseiivhsin.taskmanager.network;
 
-import com.alekseiivhsin.taskmanager.model.LoginResult;
+import com.alekseiivhsin.taskmanager.model.LoginResponse;
 
 import retrofit.http.POST;
 import retrofit.http.Query;
@@ -11,7 +11,7 @@ import retrofit.http.Query;
 public interface AuthService {
 
     @POST("/api/login")
-    LoginResult login(@Query("username") String username,
+    LoginResponse login(@Query("username") String username,
                       @Query("password") String password,
                       @Query("accountType") String accountType);
 }

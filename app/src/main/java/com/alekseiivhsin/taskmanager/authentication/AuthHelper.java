@@ -13,7 +13,7 @@ import com.alekseiivhsin.taskmanager.R;
  */
 public class AuthHelper {
 
-    public static final String USER_RIGHTS = "com.alekseiivhsin.taskmanager.authentication.USER_RIGHTS";
+    public static final String USER_RIGHTS = "taskmanager.authentication.USER_RIGHTS";
 
     private final AccountManager mAccountManager;
 
@@ -36,13 +36,14 @@ public class AuthHelper {
         final Account account = new Account(login, accountType);
         Bundle userData = new Bundle();
         userData.putString(USER_RIGHTS, String.valueOf(userRights));
+        userData.putString(AccountManager.KEY_AUTHTOKEN, authToken);
         mAccountManager.addAccountExplicitly(account, password, userData);
         mAccountManager.setAuthToken(account, authToken, authToken);
     }
 
     public int getUserRights(Account account) {
-        String stringRights = mAccountManager.getUserData(account,USER_RIGHTS);
-        if(TextUtils.isEmpty(stringRights)){
+        String stringRights = mAccountManager.getUserData(account, USER_RIGHTS);
+        if (TextUtils.isEmpty(stringRights)) {
             return UserRights.NONE;
         }
 
@@ -52,5 +53,9 @@ public class AuthHelper {
     public boolean hasAccountRights(Account account, int rightsMask) {
         int accountRight = getUserRights(account);
         return (accountRight & rightsMask) != UserRights.NONE;
+    }
+
+    public String getAuthToken(Account account) {
+        return mAccountManager.getUserData(account, AccountManager.KEY_AUTHTOKEN);
     }
 }

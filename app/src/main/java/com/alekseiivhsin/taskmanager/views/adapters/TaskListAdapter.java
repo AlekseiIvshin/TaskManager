@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.alekseiivhsin.taskmanager.R;
+import com.alekseiivhsin.taskmanager.models.Task;
 import com.alekseiivhsin.taskmanager.views.viewholders.TaskListItemViewHolder;
 
 import java.util.List;
@@ -15,7 +16,7 @@ import java.util.List;
  */
 public class TaskListAdapter extends RecyclerView.Adapter<TaskListItemViewHolder> {
 
-    List<String> tasksList;
+    private List<Task> mTaskList;
 
     @Override
     public TaskListItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -25,14 +26,18 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListItemViewHolder
 
     @Override
     public void onBindViewHolder(TaskListItemViewHolder holder, int position) {
-        holder.setContent(tasksList.get(position));
+        holder.setContent(mTaskList.get(position).name);
     }
 
     @Override
     public int getItemCount() {
-        if (tasksList != null) {
-            return tasksList.size();
+        if (mTaskList == null) {
+            return 0;
         }
-        return 0;
+        return mTaskList.size();
+    }
+
+    public void setTaskList(List<Task> taskList) {
+        mTaskList = taskList;
     }
 }

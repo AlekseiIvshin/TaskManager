@@ -2,15 +2,15 @@ package com.alekseiivhsin.taskmanager.ioc;
 
 import android.app.Application;
 
-import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
+import com.alekseiivhsin.taskmanager.authentication.UserRights;
+import com.alekseiivhsin.taskmanager.model.LoginResponse;
 import com.alekseiivhsin.taskmanager.network.AuthService;
-
-import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
 import retrofit.Retrofit;
+import retrofit.http.Query;
 
 /**
  * Created by Aleksei Ivshin
@@ -21,27 +21,45 @@ public class AuthModule {
 
     private final Application mApp;
 
-    private static final String BASE_URL = "http://localhost/";
-
     public AuthModule(Application application) {
         mApp = application;
     }
 
     @Provides
     public AuthService provideAuthService(Retrofit retrofit) {
-        return retrofit.create(AuthService.class);
-    }
+//        return retrofit.create(AuthService.class);
 
-    @Provides
-    @Singleton
-    public Retrofit provideRetrofit() {
-        return new Retrofit.Builder()
-                .baseUrl(BASE_URL)
-                .build();
+        return Stub.getStubService();
     }
 
     @Provides
     public AuthHelper provideAuthHelper() {
         return AuthHelper.get(mApp.getApplicationContext());
     }
+
+    private static class Stub {
+        protected static int POOL_LEAD_RIGHTS = UserRights.CAN_VIEW_TASK | UserRights.CAN_UPDATE_TASK | UserRights.CAN_CREATE_TASK | UserRights.CAN_CLOSE_TASK;
+        protected static int POOL_MEMBER_RIGHTS = UserRights.CAN_VIEW_TASK | UserRights.CAN_UPDATE_TASK;
+
+        public static AuthService getStubService() {
+            return new AuthService() {
+                @Override
+                public LoginResponse login(@Query("username") String username, @Query("password") String password, @Query("accountType") String accountType) {
+                    LoginResponse response = new LoginResponse();
+                    response.authToken = String.valueOf(username.hashCode() + accountType.hashCode());
+                    response.userRights = getRights(username);
+                    return response;
+                }
+            };
+        }
+
+        public static int getRights(String userName) {
+            if ("lead".equalsIgnoreCase(userName)) {
+                return POOL_LEAD_RIGHTS;
+            } else {
+                return POOL_MEMBER_RIGHTS;
+            }
+        }
+    }
+
 }
