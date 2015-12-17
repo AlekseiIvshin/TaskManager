@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/task_list_pool"
+        android:title="@string/drawer.task.list.pool"/>
+    <item android:id="@+id/task_list_user"
+        android:title="@string/drawer.task.list.user"/>
+    <item android:id="@+id/pool"
+        android:title="@string/drawer.pool.list"/>
+    <item android:id="@+id/logout"
+        android:title="@string/drawer.pool.list"/>
+</menu>

@@ -5,7 +5,7 @@ import android.app.Application;
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
 import com.alekseiivhsin.taskmanager.authentication.UserRights;
 import com.alekseiivhsin.taskmanager.model.LoginResponse;
-import com.alekseiivhsin.taskmanager.network.AuthService;
+import com.alekseiivhsin.taskmanager.network.AuthApiService;
 
 import dagger.Module;
 import dagger.Provides;
@@ -26,7 +26,7 @@ public class AuthModule {
     }
 
     @Provides
-    public AuthService provideAuthService(Retrofit retrofit) {
+    public AuthApiService provideAuthService(Retrofit retrofit) {
 //        return retrofit.create(AuthService.class);
 
         return Stub.getStubService();
@@ -41,8 +41,8 @@ public class AuthModule {
         protected static int POOL_LEAD_RIGHTS = UserRights.CAN_VIEW_TASK | UserRights.CAN_UPDATE_TASK | UserRights.CAN_CREATE_TASK | UserRights.CAN_CLOSE_TASK;
         protected static int POOL_MEMBER_RIGHTS = UserRights.CAN_VIEW_TASK | UserRights.CAN_UPDATE_TASK;
 
-        public static AuthService getStubService() {
-            return new AuthService() {
+        public static AuthApiService getStubService() {
+            return new AuthApiService() {
                 @Override
                 public LoginResponse login(@Query("username") String username, @Query("password") String password, @Query("accountType") String accountType) {
                     LoginResponse response = new LoginResponse();

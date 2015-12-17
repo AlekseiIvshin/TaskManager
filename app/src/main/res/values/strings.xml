@@ -9,4 +9,8 @@
     <string name="accountType">com.alivshin.taskmanager</string>
     <string name="error.login.empty">Login is empty!</string>
     <string name="error.password.empty">Password is empty!</string>
+    <string name="drawer.task.list.pool">Tasks list</string>
+    <string name="drawer.task.list.user">My tasks</string>
+    <string name="drawer.pool.list">Pool</string>
+    <string name="authTokenType">taskmanager.authTokenType</string>
 </resources>

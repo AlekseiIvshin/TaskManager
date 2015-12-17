@@ -25,7 +25,7 @@ public class BaseAlreadyLoggedTest {
     public static final String STUB_AUTH_TOKEN = "STUB_AUTH_TOKEN";
     public static final String STUB_TYPE = "STUB_TYPE";
 
-    protected static Account stubAccount = new Account(STUB_LOGIN,STUB_TYPE);
+    protected static Account stubAccount = new Account(STUB_LOGIN, STUB_TYPE);
     protected static Account[] stubAccountArray = {stubAccount};
 
     @BeforeClass

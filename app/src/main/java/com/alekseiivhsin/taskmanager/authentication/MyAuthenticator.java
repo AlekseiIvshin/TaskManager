@@ -10,10 +10,17 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.TextUtils;
 
+import com.alekseiivhsin.taskmanager.network.AuthApiService;
+
+import javax.inject.Inject;
+
 /**
  * Created on 25/11/2015.
  */
 public class MyAuthenticator extends AbstractAccountAuthenticator {
+
+    @Inject
+    AuthApiService mAuthApiService;
 
     private final Context mContext;
 
@@ -30,15 +37,13 @@ public class MyAuthenticator extends AbstractAccountAuthenticator {
     @Override
     public Bundle addAccount(AccountAuthenticatorResponse response, String accountType, String authTokenType, String[] requiredFeatures, Bundle options) throws NetworkErrorException {
 
-        final Intent intent = new Intent(mContext, NewAccountActivity.class);
-        intent.putExtra(NewAccountActivity.EXTRA_TOKEN_TYPE, accountType);
+        final Intent intent = new Intent(mContext, AuthenticatorActivity.class);
+        intent.putExtra(AuthenticatorActivity.EXTRA_ACCOUNT_TYPE, accountType);
+        intent.putExtra(AuthenticatorActivity.EXTRA_AUTH_TYPE, authTokenType);
+        intent.putExtra(AuthenticatorActivity.EXTRA_IS_ADDING_NEW_ACCOUNT, true);
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
 
         final Bundle bundle = new Bundle();
-        if (options != null) {
-            bundle.putAll(options);
-        }
-
         bundle.putParcelable(AccountManager.KEY_INTENT, intent);
         return bundle;
     }
@@ -50,27 +55,31 @@ public class MyAuthenticator extends AbstractAccountAuthenticator {
 
     @Override
     public Bundle getAuthToken(AccountAuthenticatorResponse response, Account account, String authTokenType, Bundle options) throws NetworkErrorException {
-        final Bundle result = new Bundle();
-        final AccountManager accountManager = AccountManager.get(mContext.getApplicationContext());
+
+        final AccountManager accountManager = AccountManager.get(mContext);
         String authToken = accountManager.peekAuthToken(account, authTokenType);
+
         if (TextUtils.isEmpty(authToken)) {
             final String password = accountManager.getPassword(account);
             if (!TextUtils.isEmpty(password)) {
-//                authToken = AuthTokenLoader.signIn(mContext, account.name, password);
+                authToken = mAuthApiService.login(account.name, password, account.type).authToken;
             }
         }
 
         if (!TextUtils.isEmpty(authToken)) {
+            final Bundle result = new Bundle();
             result.putString(AccountManager.KEY_ACCOUNT_NAME, account.name);
             result.putString(AccountManager.KEY_ACCOUNT_TYPE, account.type);
             result.putString(AccountManager.KEY_AUTHTOKEN, authToken);
-        } else {
-            final Intent intent = new Intent(mContext, LoginActivity.class);
-            intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
-            intent.putExtra(LoginActivity.EXTRA_TOKEN_TYPE, authTokenType);
-            result.putParcelable(AccountManager.KEY_INTENT, intent);
+            return result;
         }
-        return result;
+        final Intent intent = new Intent(mContext, AuthenticatorActivity.class);
+        intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
+        intent.putExtra(AuthenticatorActivity.EXTRA_ACCOUNT_TYPE, account.type);
+        intent.putExtra(AuthenticatorActivity.EXTRA_AUTH_TYPE, authTokenType);
+        final Bundle bundle = new Bundle();
+        bundle.putParcelable(AccountManager.KEY_INTENT, intent);
+        return bundle;
     }
 
     @Override

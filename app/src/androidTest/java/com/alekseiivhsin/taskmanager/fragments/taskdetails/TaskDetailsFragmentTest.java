@@ -7,7 +7,9 @@ import android.support.v7.app.AppCompatActivity;
 import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.MainActivity;
 import com.alekseiivhsin.taskmanager.R;
+import com.alekseiivhsin.taskmanager.authentication.LoginActivity;
 import com.alekseiivhsin.taskmanager.fragments.BaseAlreadyLoggedTest;
+import com.alekseiivhsin.taskmanager.fragments.TaskDetailsFragment;
 import com.alekseiivhsin.taskmanager.fragments.TaskListFragment;
 import com.alekseiivhsin.taskmanager.ioc.MockAuthModule;
 import com.alekseiivhsin.taskmanager.ioc.MockedGraph;
@@ -42,7 +44,7 @@ public abstract class TaskDetailsFragmentTest extends BaseAlreadyLoggedTest {
         mActivity
                 .getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container, new TaskListFragment(), TASK_DETAILS_TAG)
+                .replace(R.id.fragment_container, new TaskDetailsFragment(), TASK_DETAILS_TAG)
                 .addToBackStack(null)
                 .commit();
     }

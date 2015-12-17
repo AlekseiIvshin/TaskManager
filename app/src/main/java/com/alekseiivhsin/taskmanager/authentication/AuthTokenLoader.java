@@ -1,14 +1,14 @@
 package com.alekseiivhsin.taskmanager.authentication;
 
 import android.accounts.AccountManager;
+import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.content.AsyncTaskLoader;
 
 import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.model.LoginResponse;
-import com.alekseiivhsin.taskmanager.network.AuthService;
+import com.alekseiivhsin.taskmanager.network.AuthApiService;
 
 import javax.inject.Inject;
 
@@ -23,7 +23,7 @@ public class AuthTokenLoader extends AsyncTaskLoader<Intent> {
     private final String mAccountType;
 
     @Inject
-    AuthService mAuthService;
+    AuthApiService mAuthApiService;
 
     public static Bundle buildRequestBundle(String username, String password, String accountType) {
         final Bundle res = new Bundle();
@@ -48,7 +48,7 @@ public class AuthTokenLoader extends AsyncTaskLoader<Intent> {
 
     @Override
     public Intent loadInBackground() {
-        LoginResponse loginResponse = mAuthService.login(mUserName, mPassword, mAccountType);
+        LoginResponse loginResponse = mAuthApiService.login(mUserName, mPassword, mAccountType);
 
         final Intent res = new Intent();
         res.putExtra(AccountManager.KEY_ACCOUNT_NAME, mUserName);

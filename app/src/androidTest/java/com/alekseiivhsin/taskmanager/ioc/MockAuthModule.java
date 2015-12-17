@@ -3,7 +3,7 @@ package com.alekseiivhsin.taskmanager.ioc;
 import android.app.Application;
 
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
-import com.alekseiivhsin.taskmanager.network.AuthService;
+import com.alekseiivhsin.taskmanager.network.AuthApiService;
 
 import org.mockito.Mockito;
 
@@ -20,7 +20,7 @@ import retrofit.Retrofit;
 @Module
 public class MockAuthModule extends AuthModule {
 
-    public AuthService mockAuthService = Mockito.mock(AuthService.class);
+    public AuthApiService mockAuthApiService = Mockito.mock(AuthApiService.class);
     public AuthHelper mockAuthHelper = Mockito.mock(AuthHelper.class);
 
     public MockAuthModule(Application app) {
@@ -30,8 +30,8 @@ public class MockAuthModule extends AuthModule {
     @Provides
     @Singleton
     @Override
-    public AuthService provideAuthService(Retrofit retrofit) {
-        return mockAuthService;
+    public AuthApiService provideAuthService(Retrofit retrofit) {
+        return mockAuthApiService;
     }
 
     @Provides

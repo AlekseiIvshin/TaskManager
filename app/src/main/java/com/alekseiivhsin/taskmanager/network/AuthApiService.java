@@ -8,7 +8,7 @@ import retrofit.http.Query;
 /**
  * Created on 07/12/2015.
  */
-public interface AuthService {
+public interface AuthApiService {
 
     @POST("/api/login")
     LoginResponse login(@Query("username") String username,

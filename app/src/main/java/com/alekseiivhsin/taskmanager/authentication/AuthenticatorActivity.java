@@ -1,31 +1,29 @@
 package com.alekseiivhsin.taskmanager.authentication;
 
-import android.accounts.AccountAuthenticatorResponse;
+import android.accounts.Account;
+import android.accounts.AccountAuthenticatorActivity;
 import android.accounts.AccountManager;
+import android.app.LoaderManager;
 import android.content.Intent;
+import android.content.Loader;
 import android.os.Bundle;
 import android.support.design.widget.TextInputLayout;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
-import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
 import android.widget.EditText;
 
-import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.R;
-import com.alekseiivhsin.taskmanager.network.AuthService;
-
-import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class LoginActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Intent> {
+public class AuthenticatorActivity extends AccountAuthenticatorActivity implements LoaderManager.LoaderCallbacks<Intent> {
 
-    public static final String EXTRA_TOKEN_TYPE = "taskmanager.extras.EXTRA_TOKEN_TYPE";
+    public static final String EXTRA_ACCOUNT_TYPE = "EXTRA_ACCOUNT_TYPE";
+    public static final String EXTRA_AUTH_TYPE = "EXTRA_AUTH_TYPE";
+    public static final String EXTRA_IS_ADDING_NEW_ACCOUNT = "EXTRA_IS_ADDING_NEW_ACCOUNT";
 
-    private static final int AUTH_LOADER_ID = 0;
+
+    private AccountManager mAccountManager;
 
     @Bind(R.id.input_login)
     EditText mLogin;
@@ -39,26 +37,25 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
     @Bind(R.id.input_layout_password)
     TextInputLayout mPasswordInputLayout;
 
+    private String mAuthTokenType;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_login);
+        setContentView(R.layout.activity_authenticator);
 
         ButterKnife.bind(this);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-
-        loadResponse();
+        mAccountManager = AccountManager.get(this);
+        mAuthTokenType = getString(R.string.authTokenType);
     }
 
-    @OnClick(R.id.login)
-    public void login() {
+    @OnClick(R.id.submit)
+    public void submit() {
         String loginName = mLogin.getText().toString();
         String password = mPassword.getText().toString();
 
         if (validateInputFields()) {
-            getSupportLoaderManager().initLoader(AUTH_LOADER_ID, AuthTokenLoader.buildRequestBundle(loginName, password, getString(R.string.accountType)), this);
+            getLoaderManager().initLoader(0, AuthTokenLoader.buildRequestBundle(loginName, password, getString(R.string.accountType)), this);
         }
     }
 
@@ -109,23 +106,26 @@ public class LoginActivity extends AppCompatActivity implements LoaderManager.Lo
      * Sends the result or a Constants.ERROR_CODE_CANCELED error if a result isn't present.
      */
     public void finishLogin(Intent responseData) {
-        String login = responseData.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+        String accountName = responseData.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
         String password = responseData.getStringExtra(AuthTokenLoader.EXTRA_PASSWORD);
-        int userRights = responseData.getIntExtra(AuthHelper.USER_RIGHTS, UserRights.NONE);
-        String authToken = responseData.getStringExtra(AccountManager.KEY_AUTHTOKEN);
+        String accountType = responseData.getStringExtra(AccountManager.KEY_ACCOUNT_TYPE);
 
-        AuthHelper.get(this).addAccount(login, password, userRights, authToken);
+        final Account account = new Account(accountName, accountType);
+        if (getIntent().getBooleanExtra(EXTRA_IS_ADDING_NEW_ACCOUNT, false)) {
+            String authToken = responseData.getStringExtra(AccountManager.KEY_AUTHTOKEN);
+
+            Bundle userData = new Bundle();
+            userData.putString(UserRights.USER_RIGHTS, String.valueOf(responseData.getIntExtra(UserRights.USER_RIGHTS, UserRights.NONE)));
+            userData.putString(AccountManager.KEY_AUTHTOKEN, authToken);
+            mAccountManager.addAccountExplicitly(account, password, userData);
+            mAccountManager.setAuthToken(account, mAuthTokenType, authToken);
+        } else {
+            mAccountManager.setPassword(account, password);
+        }
+
+        setAccountAuthenticatorResult(responseData.getExtras());
 
         setResult(RESULT_OK, responseData);
         finish();
-    }
-
-
-    public final void loadResponse() {
-        AccountAuthenticatorResponse accountAuthenticatorResponse
-                = getIntent().getParcelableExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
-        if (accountAuthenticatorResponse != null) {
-            accountAuthenticatorResponse.onRequestContinued();
-        }
     }
 }

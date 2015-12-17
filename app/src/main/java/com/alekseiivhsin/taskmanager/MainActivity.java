@@ -1,34 +1,41 @@
 package com.alekseiivhsin.taskmanager;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.NavigationView;
 import android.support.v7.app.AppCompatActivity;
+import android.view.MenuItem;
 
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
-import com.alekseiivhsin.taskmanager.authentication.LoginActivity;
 import com.alekseiivhsin.taskmanager.fragments.TaskListFragment;
 
 import javax.inject.Inject;
 
-public class MainActivity extends AppCompatActivity {
-    private static final String TASK_LIST_TAG = "taskmanager.fragments.TASK_LIST_TAG";
+import butterknife.Bind;
+import butterknife.ButterKnife;
 
-    private static final int REQUEST_LOGIN = 1;
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+    private static final String TASK_LIST_TAG = "taskmanager.fragments.TASK_LIST_TAG";
 
     @Inject
     AuthHelper mAuthHelper;
+
+    @Bind(R.id.navigation_drawer)
+    NavigationView mNavigationView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        ButterKnife.bind(this);
+
         ((App) getApplication()).getObjectGraph().inject(this);
+
+        mNavigationView.setNavigationItemSelectedListener(this);
 
         if (savedInstanceState == null) {
             if (mAuthHelper.getAccounts().length == 0) {
-                Intent intent = new Intent(this, LoginActivity.class);
-                startActivityForResult(intent, REQUEST_LOGIN);
+                mAuthHelper.addAccount(this);
             } else {
                 getSupportFragmentManager()
                         .beginTransaction()
@@ -36,6 +43,17 @@ public class MainActivity extends AppCompatActivity {
 //                        .addToBackStack(null)
                         .commit();
             }
+        }
+    }
+
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.logout:
+                mAuthHelper.removeAccounts(this);
+                return true;
+            default:
+                return false;
         }
     }
 }

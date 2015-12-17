@@ -21,8 +21,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".authentication.NewAccountActivity" />
-        <activity android:name=".authentication.LoginActivity" />
 
         <service
             android:name=".authentication.AuthenticationService"
@@ -36,13 +34,12 @@
                 android:resource="@xml/taskmanager_authenticator" />
         </service>
 
-        <activity android:name=".activities.TasksActivity" />
-        <activity android:name=".SplashActivity" />
-
         <service
             android:name=".services.TaskService"
             android:enabled="true"
-            android:exported="false"></service>
+            android:exported="false" />
+
+        <activity android:name=".authentication.AuthenticatorActivity"></activity>
     </application>
 
 </manifest>

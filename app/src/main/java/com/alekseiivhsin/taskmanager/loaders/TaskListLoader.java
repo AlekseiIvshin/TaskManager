@@ -2,6 +2,7 @@ package com.alekseiivhsin.taskmanager.loaders;
 
 import android.content.Context;
 import android.support.v4.content.AsyncTaskLoader;
+import android.util.Log;
 
 import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.models.Task;
@@ -27,11 +28,15 @@ public class TaskListLoader extends AsyncTaskLoader<List<Task>> {
     }
 
     @Override
+    protected void onStartLoading() {
+        forceLoad();
+    }
+
+    @Override
     public List<Task> loadInBackground() {
         App.getObjectGraphInstance().inject(this);
         List<Task> result = mApiService.getTaskList(mAuthToken);
-        deliverResult(result);
-        return null;
+        return result;
     }
 
 
