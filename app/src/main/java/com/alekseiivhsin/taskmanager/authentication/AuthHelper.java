@@ -81,4 +81,7 @@ public class AuthHelper {
         }
     }
 
+    public boolean isNeedAuthenticateUser(){
+        return getAccounts().length == 0;
+    }
 }

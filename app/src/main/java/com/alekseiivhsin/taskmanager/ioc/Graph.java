@@ -34,7 +34,11 @@ public interface Graph {
 
     final class Initializer {
         public static Graph init(Application app) {
-            return DaggerGraph.builder().authModule(new AuthModule(app)).build();
+            return DaggerGraph.builder()
+                    .authModule(new AuthModule(app))
+                    .networkModule(new NetworkModule())
+                    .taskModule(new TaskModule())
+                    .build();
         }
     }
 }

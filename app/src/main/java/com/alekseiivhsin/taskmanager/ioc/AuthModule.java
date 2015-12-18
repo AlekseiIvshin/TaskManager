@@ -4,7 +4,7 @@ import android.app.Application;
 
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
 import com.alekseiivhsin.taskmanager.authentication.UserRights;
-import com.alekseiivhsin.taskmanager.model.LoginResponse;
+import com.alekseiivhsin.taskmanager.network.model.SignInResponse;
 import com.alekseiivhsin.taskmanager.network.AuthApiService;
 
 import dagger.Module;
@@ -44,8 +44,8 @@ public class AuthModule {
         public static AuthApiService getStubService() {
             return new AuthApiService() {
                 @Override
-                public LoginResponse login(@Query("username") String username, @Query("password") String password, @Query("accountType") String accountType) {
-                    LoginResponse response = new LoginResponse();
+                public SignInResponse login(@Query("username") String username, @Query("password") String password, @Query("accountType") String accountType) {
+                    SignInResponse response = new SignInResponse();
                     response.authToken = String.valueOf(username.hashCode() + accountType.hashCode());
                     response.userRights = getRights(username);
                     return response;

@@ -33,7 +33,7 @@
     </android.support.design.widget.TextInputLayout>
 
     <Button
-        android:id="@+id/submit"
+        android:id="@+id/sign_in"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/text_login" />

@@ -22,5 +22,4 @@ public class NetworkModule {
                 .baseUrl(BASE_URL)
                 .build();
     }
-
 }

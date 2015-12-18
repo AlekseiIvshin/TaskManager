@@ -34,8 +34,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     @Bind(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
 
-    private ActionBarDrawerToggle mDrawerToggle;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -45,32 +43,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         ((App) getApplication()).getObjectGraph().inject(this);
 
-        mNavigationView.setNavigationItemSelectedListener(this);
-
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        setSupportActionBar(toolbar);
-
-        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(
-                this,
-                mDrawerLayout,
-                toolbar,
-                R.string.navigation_drawer_open,
-                R.string.navigation_drawer_close) {
-            @Override
-            public void onDrawerOpened(View drawerView) {
-                super.onDrawerOpened(drawerView);
-                InputMethodManager inputMethodManager = (InputMethodManager) MainActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(MainActivity.this.getCurrentFocus().getWindowToken(), 0);
-            }
-        };
-
-        mDrawerLayout.setDrawerListener(drawerToggle);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
+        initializeDrawer();
 
         if (savedInstanceState == null) {
-            if (mAuthHelper.getAccounts().length == 0) {
+            if (mAuthHelper.isNeedAuthenticateUser()) {
                 showSignIn();
             } else {
                 showTasksList();
@@ -97,7 +73,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         }
     }
 
-    protected void showSignIn() {
+    public void showSignIn() {
         mAuthHelper.removeAccounts(this);
         getSupportFragmentManager()
                 .beginTransaction()
@@ -106,7 +82,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 .commit();
     }
 
-    protected void showTasksList() {
+    public void showTasksList() {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_container, new TaskListFragment(), TASK_LIST_TAG)
@@ -121,4 +97,32 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             showTasksList();
         }
     }
+
+    private void initializeDrawer() {
+        mNavigationView.setNavigationItemSelectedListener(this);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+
+        ActionBarDrawerToggle drawerToggle = new ActionBarDrawerToggle(
+                this,
+                mDrawerLayout,
+                toolbar,
+                R.string.navigation_drawer_open,
+                R.string.navigation_drawer_close) {
+            @Override
+            public void onDrawerOpened(View drawerView) {
+                super.onDrawerOpened(drawerView);
+                InputMethodManager inputMethodManager = (InputMethodManager) MainActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(MainActivity.this.getCurrentFocus().getWindowToken(), 0);
+            }
+        };
+
+        mDrawerLayout.setDrawerListener(drawerToggle);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+
+    }
+
 }

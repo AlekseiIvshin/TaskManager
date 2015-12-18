@@ -92,7 +92,7 @@ public class SignInFragment extends Fragment implements LoaderManager.LoaderCall
         return rootView;
     }
 
-    @OnClick(R.id.submit)
+    @OnClick(R.id.sign_in)
     public void submit() {
         String loginName = mLogin.getText().toString();
         String password = mPassword.getText().toString();

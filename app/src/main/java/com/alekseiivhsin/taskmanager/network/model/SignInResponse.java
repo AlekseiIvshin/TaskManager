@@ -1,4 +1,4 @@
-package com.alekseiivhsin.taskmanager.model;
+package com.alekseiivhsin.taskmanager.network.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
@@ -7,7 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  * Created on 07/12/2015.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class LoginResponse {
+public class SignInResponse {
     @JsonProperty("auth_token")
     public String authToken;
     @JsonProperty("user_rights")

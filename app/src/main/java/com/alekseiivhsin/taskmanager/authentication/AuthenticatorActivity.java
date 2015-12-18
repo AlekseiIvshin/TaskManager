@@ -49,7 +49,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity implemen
         mAuthTokenType = getString(R.string.authTokenType);
     }
 
-    @OnClick(R.id.submit)
+    @OnClick(R.id.sign_in)
     public void submit() {
         String loginName = mLogin.getText().toString();
         String password = mPassword.getText().toString();

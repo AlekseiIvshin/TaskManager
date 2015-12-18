@@ -17,8 +17,7 @@ import static org.mockito.Mockito.when;
  * Created on 17/12/2015.
  */
 @RunWith(AndroidJUnit4.class)
-@Ignore
-public class BaseAlreadyLoggedTest {
+public abstract class BaseAlreadyLoggedTest {
 
     public static final String STUB_LOGIN = "STUB_LOGIN";
     public static final String STUB_PASSWORD = "STUB_PASSWORD";
