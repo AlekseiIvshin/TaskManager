@@ -7,5 +7,5 @@
     <item android:id="@+id/pool"
         android:title="@string/drawer.pool.list"/>
     <item android:id="@+id/logout"
-        android:title="@string/drawer.pool.list"/>
+        android:title="@string/drawer.logout"/>
 </menu>

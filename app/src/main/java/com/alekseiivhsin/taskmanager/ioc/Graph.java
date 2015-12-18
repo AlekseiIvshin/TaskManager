@@ -33,6 +33,8 @@ public interface Graph {
 
     void inject(TaskListLoader taskListLoader);
 
+    void inject(com.alekseiivhsin.taskmanager.auth.AuthTokenLoader authTokenLoader);
+
     final class Initializer {
         public static Graph init(Application app) {
             return DaggerGraph.builder().authModule(new AuthModule(app)).build();

@@ -37,6 +37,7 @@ public class AuthHelper {
         return mAccountManager.getAccountsByType(accountType);
     }
 
+    @Deprecated
     public void addAccountExplicitly(String login, String password, int userRights, String authToken, String authTokenType) {
         final Account account = new Account(login, accountType);
         Bundle userData = new Bundle();
@@ -46,7 +47,7 @@ public class AuthHelper {
         mAccountManager.setAuthToken(account, authTokenType, authToken);
     }
 
-
+    @Deprecated
     public void addAccount(Activity activity) {
         mAccountManager.addAccount(accountType, authTokenType, null, null, activity, null, null);
     }

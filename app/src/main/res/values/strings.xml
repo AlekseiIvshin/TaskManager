@@ -13,4 +13,5 @@
     <string name="drawer.task.list.user">My tasks</string>
     <string name="drawer.pool.list">Pool</string>
     <string name="authTokenType">taskmanager.authTokenType</string>
+    <string name="drawer.logout">Logout</string>
 </resources>

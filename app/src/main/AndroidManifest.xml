@@ -33,13 +33,14 @@
                 android:name="android.accounts.AccountAuthenticator"
                 android:resource="@xml/taskmanager_authenticator" />
         </service>
-
         <service
             android:name=".services.TaskService"
             android:enabled="true"
             android:exported="false" />
 
-        <activity android:name=".authentication.AuthenticatorActivity"></activity>
+        <activity android:name=".authentication.AuthenticatorActivity" />
+        <activity android:name=".auth.SignIn" />
+
     </application>
 
 </manifest>

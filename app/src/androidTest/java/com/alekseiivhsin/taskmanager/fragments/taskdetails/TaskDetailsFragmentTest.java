@@ -7,10 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.MainActivity;
 import com.alekseiivhsin.taskmanager.R;
-import com.alekseiivhsin.taskmanager.authentication.LoginActivity;
 import com.alekseiivhsin.taskmanager.fragments.BaseAlreadyLoggedTest;
 import com.alekseiivhsin.taskmanager.fragments.TaskDetailsFragment;
-import com.alekseiivhsin.taskmanager.fragments.TaskListFragment;
 import com.alekseiivhsin.taskmanager.ioc.MockAuthModule;
 import com.alekseiivhsin.taskmanager.ioc.MockedGraph;
 
