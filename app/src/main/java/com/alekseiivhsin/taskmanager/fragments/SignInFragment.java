@@ -2,6 +2,8 @@ package com.alekseiivhsin.taskmanager.fragments;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
+import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -9,16 +11,16 @@ import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.alekseiivhsin.taskmanager.R;
-import com.alekseiivhsin.taskmanager.auth.AuthTokenLoader;
+import com.alekseiivhsin.taskmanager.loaders.AuthTokenLoader;
 import com.alekseiivhsin.taskmanager.authentication.UserRights;
 
 import butterknife.Bind;
@@ -26,8 +28,6 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class SignInFragment extends Fragment implements LoaderManager.LoaderCallbacks<Intent> {
-
-    public static final String SIGN_IN_TAG = "taskmanager.fragments.SIGN_IN_TAG";
 
     public static final String EXTRA_IS_ADDING_NEW_ACCOUNT = "EXTRA_IS_ADDING_NEW_ACCOUNT";
 
@@ -50,6 +50,7 @@ public class SignInFragment extends Fragment implements LoaderManager.LoaderCall
     private String mAccountType;
 
     Handler mSignInHandler = new Handler(Looper.getMainLooper());
+    private SignInCallbacks mCallbacks;
 
     public static SignInFragment newInstance(boolean addNewAccount) {
         SignInFragment fragment = new SignInFragment();
@@ -57,6 +58,20 @@ public class SignInFragment extends Fragment implements LoaderManager.LoaderCall
         args.putBoolean(EXTRA_IS_ADDING_NEW_ACCOUNT, addNewAccount);
         fragment.setArguments(args);
         return fragment;
+    }
+
+    @Override
+    public void onDetach() {
+        mCallbacks = null;
+        super.onDetach();
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if (context instanceof SignInCallbacks) {
+            mCallbacks = (SignInCallbacks) context;
+        }
     }
 
     @Override
@@ -81,6 +96,10 @@ public class SignInFragment extends Fragment implements LoaderManager.LoaderCall
     public void submit() {
         String loginName = mLogin.getText().toString();
         String password = mPassword.getText().toString();
+
+
+        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
 
         if (validateInputFields()) {
             getLoaderManager().initLoader(0, AuthTokenLoader.buildRequestBundle(loginName, password, mAccountType), this);
@@ -154,8 +173,14 @@ public class SignInFragment extends Fragment implements LoaderManager.LoaderCall
         mSignInHandler.post(new Runnable() {
             @Override
             public void run() {
-                getFragmentManager().popBackStack(SIGN_IN_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+                if (mCallbacks != null) {
+                    mCallbacks.onSignedIn(Activity.RESULT_OK);
+                }
             }
         });
+    }
+
+    public interface SignInCallbacks {
+        void onSignedIn(int result);
     }
 }

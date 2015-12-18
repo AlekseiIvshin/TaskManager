@@ -1,4 +1,4 @@
-package com.alekseiivhsin.taskmanager.auth;
+package com.alekseiivhsin.taskmanager.loaders;
 
 import android.accounts.AccountManager;
 import android.content.Context;

@@ -14,4 +14,6 @@
     <string name="drawer.pool.list">Pool</string>
     <string name="authTokenType">taskmanager.authTokenType</string>
     <string name="drawer.logout">Logout</string>
+    <string name="navigation_drawer.open">Open</string>
+    <string name="navigation_drawer.close">Close</string>
 </resources>

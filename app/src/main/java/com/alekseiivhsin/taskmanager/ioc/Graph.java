@@ -6,7 +6,6 @@ import com.alekseiivhsin.taskmanager.MainActivity;
 import com.alekseiivhsin.taskmanager.authentication.AuthTokenLoader;
 import com.alekseiivhsin.taskmanager.fragments.TaskListFragment;
 import com.alekseiivhsin.taskmanager.loaders.TaskListLoader;
-import com.alekseiivhsin.taskmanager.services.TaskService;
 
 import javax.inject.Singleton;
 
@@ -29,11 +28,9 @@ public interface Graph {
 
     void inject(MainActivity mainActivity);
 
-    void inject(TaskService taskService);
-
     void inject(TaskListLoader taskListLoader);
 
-    void inject(com.alekseiivhsin.taskmanager.auth.AuthTokenLoader authTokenLoader);
+    void inject(com.alekseiivhsin.taskmanager.loaders.AuthTokenLoader authTokenLoader);
 
     final class Initializer {
         public static Graph init(Application app) {

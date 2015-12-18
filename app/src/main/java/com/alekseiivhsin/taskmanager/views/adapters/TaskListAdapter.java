@@ -39,5 +39,6 @@ public class TaskListAdapter extends RecyclerView.Adapter<TaskListItemViewHolder
 
     public void setTaskList(List<Task> taskList) {
         mTaskList = taskList;
+        notifyDataSetChanged();
     }
 }
