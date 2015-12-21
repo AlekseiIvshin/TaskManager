@@ -1,9 +1,11 @@
 package com.alekseiivhsin.taskmanager.ioc;
 
+import javax.inject.Named;
 import javax.inject.Singleton;
 
 import dagger.Module;
 import dagger.Provides;
+import retrofit.GsonConverterFactory;
 import retrofit.Retrofit;
 
 /**
@@ -13,13 +15,21 @@ import retrofit.Retrofit;
 @Module
 public class NetworkModule {
 
-    private static final String BASE_URL = "http://localhost/";
+    private static final String DEFAULT_BASE_URL = "http://localhost/";
 
     @Provides
     @Singleton
-    public Retrofit provideRetrofit() {
+    public Retrofit provideRetrofit(@Named("apiBaseUrl") String baseUrl) {
         return new Retrofit.Builder()
-                .baseUrl(BASE_URL)
+                .baseUrl(baseUrl)
+                .addConverterFactory(GsonConverterFactory.create())
                 .build();
+    }
+
+    @Provides
+    @Singleton
+    @Named("apiBaseUrl")
+    public String provideApiBaseUrl(){
+        return DEFAULT_BASE_URL;
     }
 }

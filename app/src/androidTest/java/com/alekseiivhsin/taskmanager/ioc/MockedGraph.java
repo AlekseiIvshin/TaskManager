@@ -1,10 +1,10 @@
 package com.alekseiivhsin.taskmanager.ioc;
 
+import com.alekseiivhsin.taskmanager.App;
+
 import javax.inject.Singleton;
 
 import dagger.Component;
-
-import static org.mockito.Mockito.mock;
 
 /**
  * Created on 07/12/2015.
@@ -21,34 +21,43 @@ public interface MockedGraph extends Graph {
 
     class MockGraphBuilder {
 
-        NetworkModule mockNetworkModule = mock(NetworkModule.class);
-        AuthModule mockAuthModule = mock(AuthModule.class);
-        TaskModule mockTaskModule = mock(TaskModule.class);
+        NetworkModule stubNetworkModule;
+        AuthModule stubAuthModule;
+        TaskModule stubTaskModule;
 
         public static MockGraphBuilder begin() {
             return new MockGraphBuilder();
         }
 
         public Graph build() {
+            if (stubNetworkModule == null) {
+                stubNetworkModule = new NetworkModule();
+            }
+            if (stubTaskModule == null) {
+                stubTaskModule = new TaskModule();
+            }
+            if (stubAuthModule == null) {
+                stubAuthModule = new AuthModule(App.getInstance());
+            }
             return DaggerGraph.builder()
-                    .authModule(mockAuthModule)
-                    .taskModule(mockTaskModule)
-                    .networkModule(mockNetworkModule)
+                    .authModule(stubAuthModule)
+                    .taskModule(stubTaskModule)
+                    .networkModule(stubNetworkModule)
                     .build();
         }
 
-        public MockGraphBuilder setMockAuthModule(AuthModule mockAuthModule) {
-            this.mockAuthModule = mockAuthModule;
+        public MockGraphBuilder setStubAuthModule(AuthModule stubAuthModule) {
+            this.stubAuthModule = stubAuthModule;
             return this;
         }
 
-        public MockGraphBuilder setMockNetworkModule(NetworkModule mockModule) {
-            this.mockNetworkModule = mockModule;
+        public MockGraphBuilder setStubNetworkModule(NetworkModule mockModule) {
+            this.stubNetworkModule = mockModule;
             return this;
         }
 
-        public MockGraphBuilder setMockTaskModule(TaskModule mockModule) {
-            this.mockTaskModule = mockModule;
+        public MockGraphBuilder setStubTaskModule(TaskModule mockModule) {
+            this.stubTaskModule = mockModule;
             return this;
         }
 

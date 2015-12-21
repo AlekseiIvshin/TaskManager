@@ -5,8 +5,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -18,19 +16,22 @@ import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.R;
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
 import com.alekseiivhsin.taskmanager.authentication.UserRights;
-import com.alekseiivhsin.taskmanager.loaders.TaskListLoader;
-import com.alekseiivhsin.taskmanager.models.Task;
+import com.alekseiivhsin.taskmanager.network.TaskListRequest;
+import com.alekseiivhsin.taskmanager.network.model.TaskListResponse;
+import com.alekseiivhsin.taskmanager.robospice.TaskSpiceService;
 import com.alekseiivhsin.taskmanager.views.adapters.TaskListAdapter;
+import com.octo.android.robospice.SpiceManager;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
 
 import java.util.Collections;
-import java.util.List;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class TaskListFragment extends Fragment implements LoaderManager.LoaderCallbacks<List<Task>> {
+public class TaskListFragment extends Fragment {
 
     public static final int TASK_LIST_LOADER_ID = 0;
     private static final String TAG = TaskListFragment.class.getSimpleName();
@@ -45,6 +46,8 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
 
     @Inject
     AuthHelper mAuthHelper;
+
+    protected SpiceManager spiceManager = new SpiceManager(TaskSpiceService.class);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -68,9 +71,34 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
             mAddNewTask.setVisibility(View.GONE);
         }
 
-        getLoaderManager().initLoader(TASK_LIST_LOADER_ID, null, this);
-
         return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        spiceManager.start(getActivity());
+
+        TaskListRequest request = new TaskListRequest(mAuthHelper.getAuthToken());
+        spiceManager.execute(request, new RequestListener<TaskListResponse>() {
+            @Override
+            public void onRequestFailure(SpiceException spiceException) {
+                mTaskListAdapter.setTaskList(Collections.EMPTY_LIST);
+            }
+
+            @Override
+            public void onRequestSuccess(TaskListResponse taskListResponse) {
+                mTaskListAdapter.setTaskList(taskListResponse.taskList);
+            }
+        });
+    }
+
+    @Override
+    public void onStop() {
+        if (spiceManager.isStarted()) {
+            spiceManager.shouldStop();
+        }
+        super.onStop();
     }
 
     protected boolean isNeedShowNewTaskButton() {
@@ -86,20 +114,5 @@ public class TaskListFragment extends Fragment implements LoaderManager.LoaderCa
         }
         Log.v(TAG, "There is not account with need rights: UserRights.CAN_CREATE_TASK=" + UserRights.CAN_CREATE_TASK);
         return false;
-    }
-
-    @Override
-    public Loader<List<Task>> onCreateLoader(int id, Bundle args) {
-        return new TaskListLoader(getActivity(), mAuthHelper.getAuthToken(mAuthHelper.getAccounts()[0]));
-    }
-
-    @Override
-    public void onLoadFinished(Loader<List<Task>> loader, List<Task> data) {
-        mTaskListAdapter.setTaskList(data);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<List<Task>> loader) {
-        mTaskListAdapter.setTaskList(Collections.EMPTY_LIST);
     }
 }

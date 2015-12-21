@@ -20,31 +20,7 @@ public class TaskModule {
 
     @Provides
     public TaskApiService provideTaskApiService(Retrofit retrofit) {
-        return Stub.getStubService();
+        return retrofit.create(TaskApiService.class);
     }
 
-
-    private static class Stub {
-
-        private static final List<Task> TASKS = Arrays.asList(
-                new Task("Task 1 "),
-                new Task("Task 2"),
-                new Task("Task 3")
-        );
-
-        public static TaskApiService getStubService() {
-            return new TaskApiService() {
-                @Override
-                public List<Task> getTaskList(@Query("authToken") String authToken) {
-                    return TASKS;
-                }
-
-                @Override
-                public Task getTask(@Path("id") String taskId, @Query("authToken") String authToken) {
-                    int pos = Integer.parseInt(taskId);
-                    return TASKS.get(pos);
-                }
-            };
-        }
-    }
 }

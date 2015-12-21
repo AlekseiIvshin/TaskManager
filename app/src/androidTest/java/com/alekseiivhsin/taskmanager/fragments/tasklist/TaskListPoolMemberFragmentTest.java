@@ -20,6 +20,7 @@ import static org.mockito.Mockito.when;
  * Created on 14/12/2015.
  */
 @RunWith(AndroidJUnit4.class)
+@Ignore
 public class TaskListPoolMemberFragmentTest extends BaseTaskListFragmentTest {
 
     @Override

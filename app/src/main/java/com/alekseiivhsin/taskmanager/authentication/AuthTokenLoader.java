@@ -10,6 +10,8 @@ import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.network.model.SignInResponse;
 import com.alekseiivhsin.taskmanager.network.AuthApiService;
 
+import java.io.IOException;
+
 import javax.inject.Inject;
 
 /**
@@ -48,7 +50,12 @@ public class AuthTokenLoader extends AsyncTaskLoader<Intent> {
 
     @Override
     public Intent loadInBackground() {
-        SignInResponse signInResponse = mAuthApiService.login(mUserName, mPassword, mAccountType);
+        SignInResponse signInResponse;
+        try {
+            signInResponse = mAuthApiService.login(mUserName, mPassword, mAccountType).execute().body();
+        } catch (IOException e) {
+            return new Intent();
+        }
 
         final Intent res = new Intent();
         res.putExtra(AccountManager.KEY_ACCOUNT_NAME, mUserName);

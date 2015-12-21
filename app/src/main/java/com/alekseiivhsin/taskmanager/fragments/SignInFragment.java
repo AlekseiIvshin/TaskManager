@@ -4,33 +4,39 @@ import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.alekseiivhsin.taskmanager.R;
-import com.alekseiivhsin.taskmanager.loaders.AuthTokenLoader;
 import com.alekseiivhsin.taskmanager.authentication.UserRights;
+import com.alekseiivhsin.taskmanager.network.SignInRequest;
+import com.alekseiivhsin.taskmanager.network.model.SignInResponse;
+import com.alekseiivhsin.taskmanager.robospice.TaskSpiceService;
+import com.octo.android.robospice.SpiceManager;
+import com.octo.android.robospice.persistence.exception.SpiceException;
+import com.octo.android.robospice.request.listener.RequestListener;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SignInFragment extends Fragment implements LoaderManager.LoaderCallbacks<Intent> {
+public class SignInFragment extends Fragment {
 
     public static final String EXTRA_IS_ADDING_NEW_ACCOUNT = "EXTRA_IS_ADDING_NEW_ACCOUNT";
+    private static final String TAG = SignInFragment.class.getSimpleName();
 
+
+    protected SpiceManager spiceManager = new SpiceManager(TaskSpiceService.class);
 
     private AccountManager mAccountManager;
 
@@ -46,10 +52,15 @@ public class SignInFragment extends Fragment implements LoaderManager.LoaderCall
     @Bind(R.id.input_layout_password)
     TextInputLayout mPasswordInputLayout;
 
+    @Bind(R.id.sign_in)
+    Button mSignIn;
+
+    @Bind(R.id.error_message)
+    TextView mErrorMessages;
+
     private String mAuthTokenType;
     private String mAccountType;
 
-    Handler mSignInHandler = new Handler(Looper.getMainLooper());
     private SignInCallbacks mCallbacks;
 
     public static SignInFragment newInstance(boolean addNewAccount) {
@@ -77,7 +88,6 @@ public class SignInFragment extends Fragment implements LoaderManager.LoaderCall
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         mAccountManager = AccountManager.get(getActivity());
         mAuthTokenType = getString(R.string.authTokenType);
         mAccountType = getString(R.string.accountType);
@@ -92,33 +102,51 @@ public class SignInFragment extends Fragment implements LoaderManager.LoaderCall
         return rootView;
     }
 
+    @Override
+    public void onStart() {
+        super.onStart();
+        spiceManager.start(getActivity());
+    }
+
+    @Override
+    public void onStop() {
+        if (spiceManager.isStarted()) {
+            spiceManager.shouldStop();
+        }
+        super.onStop();
+    }
+
     @OnClick(R.id.sign_in)
     public void submit() {
-        String loginName = mLogin.getText().toString();
-        String password = mPassword.getText().toString();
 
-
-        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
-        inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
 
         if (validateInputFields()) {
-            getLoaderManager().initLoader(0, AuthTokenLoader.buildRequestBundle(loginName, password, mAccountType), this);
+            onRequestStarted();
+            String loginName = mLogin.getText().toString();
+            String password = mPassword.getText().toString();
+
+            SignInRequest request = new SignInRequest(loginName, password, mAccountType);
+
+
+            spiceManager.execute(request, new RequestListener<SignInResponse>() {
+                @Override
+                public void onRequestFailure(SpiceException spiceException) {
+                    Log.v(TAG, "Failure on sign in: " + spiceException.getMessage());
+                    showErrorMessage(spiceException.getMessage());
+                    unlockInputFields();
+                }
+
+                @Override
+                public void onRequestSuccess(SignInResponse signInResponse) {
+                    if (signInResponse == null) {
+                        onRequestFailure(new SpiceException("Empty response"));
+                    } else {
+                        Log.v(TAG, "Success on sign in: " + signInResponse.authToken);
+                        finishLogin(signInResponse);
+                    }
+                }
+            });
         }
-    }
-
-    @Override
-    public Loader<Intent> onCreateLoader(int id, Bundle args) {
-        return new AuthTokenLoader(getActivity(), args);
-    }
-
-    @Override
-    public void onLoadFinished(Loader<Intent> loader, Intent data) {
-        finishLogin(data);
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Intent> loader) {
-
     }
 
     public boolean validateInputFields() {
@@ -149,20 +177,40 @@ public class SignInFragment extends Fragment implements LoaderManager.LoaderCall
         return true;
     }
 
+    public void onRequestStarted() {
+        mErrorMessages.setVisibility(View.GONE);
+        InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
+        inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
+
+        lockInputFields();
+    }
+
+    public void lockInputFields() {
+        mLogin.setEnabled(false);
+        mPassword.setEnabled(false);
+        mSignIn.setEnabled(false);
+    }
+
+    public void unlockInputFields() {
+        mLogin.setEnabled(true);
+        mPassword.setEnabled(true);
+        mSignIn.setEnabled(true);
+    }
+
+
     /**
      * Sends the result or a Constants.ERROR_CODE_CANCELED error if a result isn't present.
      */
-    public void finishLogin(Intent responseData) {
-        String accountName = responseData.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-        String password = responseData.getStringExtra(AuthTokenLoader.EXTRA_PASSWORD);
-        String accountType = responseData.getStringExtra(AccountManager.KEY_ACCOUNT_TYPE);
+    public void finishLogin(SignInResponse signInResponse) {
+        String accountName = mLogin.getText().toString();
+        String password = mLogin.getText().toString();
 
-        final Account account = new Account(accountName, accountType);
+        final Account account = new Account(accountName, mAccountType);
         if (getArguments() != null && getArguments().getBoolean(EXTRA_IS_ADDING_NEW_ACCOUNT, false)) {
-            String authToken = responseData.getStringExtra(AccountManager.KEY_AUTHTOKEN);
+            String authToken = signInResponse.authToken;
 
             Bundle userData = new Bundle();
-            userData.putString(UserRights.USER_RIGHTS, String.valueOf(responseData.getIntExtra(UserRights.USER_RIGHTS, UserRights.NONE)));
+            userData.putString(UserRights.USER_RIGHTS, String.valueOf(signInResponse.userRights));
             userData.putString(AccountManager.KEY_AUTHTOKEN, authToken);
             mAccountManager.addAccountExplicitly(account, password, userData);
             mAccountManager.setAuthToken(account, mAuthTokenType, authToken);
@@ -170,14 +218,13 @@ public class SignInFragment extends Fragment implements LoaderManager.LoaderCall
             mAccountManager.setPassword(account, password);
         }
 
-        mSignInHandler.post(new Runnable() {
-            @Override
-            public void run() {
-                if (mCallbacks != null) {
-                    mCallbacks.onSignedIn(Activity.RESULT_OK);
-                }
-            }
-        });
+        mCallbacks.onSignedIn(Activity.RESULT_OK);
+        unlockInputFields();
+    }
+
+    public void showErrorMessage(String message) {
+        mErrorMessages.setVisibility(View.VISIBLE);
+        mErrorMessages.setText(message);
     }
 
     public interface SignInCallbacks {

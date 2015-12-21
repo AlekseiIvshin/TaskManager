@@ -70,6 +70,18 @@ public class AuthHelper {
         return mAccountManager.getUserData(account, AccountManager.KEY_AUTHTOKEN);
     }
 
+    public String getAuthToken(){
+        Account[] accounts = getAccounts();
+        String authToken = null;
+        for(Account account: accounts) {
+            authToken = getAuthToken(account);
+            if(authToken != null){
+                break;
+            }
+        }
+        return authToken;
+    }
+
     public void removeAccounts(Activity activity) {
         Account[] accounts = getAccounts();
         for (Account account : accounts) {

@@ -16,4 +16,5 @@
     <string name="drawer.logout">Logout</string>
     <string name="navigation_drawer.open">Open</string>
     <string name="navigation_drawer.close">Close</string>
+    <string name="error.message.default">Unknown error occured</string>
 </resources>

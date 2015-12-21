@@ -12,6 +12,8 @@ import android.text.TextUtils;
 
 import com.alekseiivhsin.taskmanager.network.AuthApiService;
 
+import java.io.IOException;
+
 import javax.inject.Inject;
 
 /**
@@ -62,7 +64,11 @@ public class MyAuthenticator extends AbstractAccountAuthenticator {
         if (TextUtils.isEmpty(authToken)) {
             final String password = accountManager.getPassword(account);
             if (!TextUtils.isEmpty(password)) {
-                authToken = mAuthApiService.login(account.name, password, account.type).authToken;
+                try {
+                    authToken = mAuthApiService.login(account.name, password, account.type).execute().body().authToken;
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
 

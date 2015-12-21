@@ -26,6 +26,7 @@ import static org.mockito.Mockito.when;
  * Created on 14/12/2015.
  */
 @RunWith(AndroidJUnit4.class)
+@Ignore
 public abstract class BaseTaskListFragmentTest extends BaseAlreadyLoggedTest {
 
     protected int POOL_LEAD_RIGHTS = UserRights.CAN_VIEW_TASK | UserRights.CAN_UPDATE_TASK | UserRights.CAN_CREATE_TASK | UserRights.CAN_CLOSE_TASK;

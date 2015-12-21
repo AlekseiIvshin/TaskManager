@@ -2,6 +2,7 @@ package com.alekseiivhsin.taskmanager.network;
 
 import com.alekseiivhsin.taskmanager.network.model.SignInResponse;
 
+import retrofit.Call;
 import retrofit.http.POST;
 import retrofit.http.Query;
 
@@ -11,7 +12,7 @@ import retrofit.http.Query;
 public interface AuthApiService {
 
     @POST("/api/login")
-    SignInResponse login(@Query("username") String username,
+    Call<SignInResponse> login(@Query("username") String username,
                       @Query("password") String password,
                       @Query("accountType") String accountType);
 }

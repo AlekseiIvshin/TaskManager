@@ -46,11 +46,11 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         initializeDrawer();
 
         if (savedInstanceState == null) {
-            if (mAuthHelper.isNeedAuthenticateUser()) {
-                showSignIn();
-            } else {
-                showTasksList();
-            }
+//            if (mAuthHelper.isNeedAuthenticateUser()) {
+//                showSignIn();
+//            } else {
+//                showTasksList();
+//            }
         }
 
     }
