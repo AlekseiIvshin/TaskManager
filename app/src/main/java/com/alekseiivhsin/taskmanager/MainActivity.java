@@ -14,6 +14,7 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
 import com.alekseiivhsin.taskmanager.fragments.SignInFragment;
+import com.alekseiivhsin.taskmanager.fragments.TaskDetailsFragment;
 import com.alekseiivhsin.taskmanager.fragments.TaskListFragment;
 
 import javax.inject.Inject;
@@ -22,8 +23,9 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SignInFragment.SignInCallbacks {
-    private static final String TASK_LIST_TAG = "taskmanager.fragments.TASK_LIST_TAG";
-    public static final String SIGN_IN_TAG = "taskmanager.fragments.SIGN_IN_TAG";
+    public static final String TAG_TASK_LIST = "taskmanager.fragments.TAG_TASK_LIST";
+    public static final String TAG_SIGN_IN = "taskmanager.fragments.TAG_SIGN_IN";
+    private static final String TAG_TASK_DETAILS = "taskmanager.fragments.TAG_TASK_DETAILS";
 
     @Inject
     AuthHelper mAuthHelper;
@@ -77,22 +79,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         mAuthHelper.removeAccounts(this);
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container, SignInFragment.newInstance(true), SIGN_IN_TAG)
-                .addToBackStack(SIGN_IN_TAG)
+                .replace(R.id.fragment_container, SignInFragment.newInstance(true), TAG_SIGN_IN)
+                .addToBackStack(TAG_SIGN_IN)
                 .commit();
     }
 
     public void showTasksList() {
         getSupportFragmentManager()
                 .beginTransaction()
-                .replace(R.id.fragment_container, new TaskListFragment(), TASK_LIST_TAG)
+                .replace(R.id.fragment_container, new TaskListFragment(), TAG_TASK_LIST)
+                .addToBackStack(TAG_TASK_LIST)
+                .commit();
+    }
+
+    public void showTasksDetails(int taskId) {
+        getSupportFragmentManager()
+                .beginTransaction()
+                .replace(R.id.fragment_container, TaskDetailsFragment.newInstance(taskId), TAG_TASK_DETAILS)
+                .addToBackStack(TAG_TASK_DETAILS)
                 .commit();
     }
 
     @Override
     public void onSignedIn(int result) {
         if (getSupportFragmentManager().getBackStackEntryCount() > 1) {
-            getFragmentManager().popBackStack(SIGN_IN_TAG, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+            getFragmentManager().popBackStack(TAG_SIGN_IN, FragmentManager.POP_BACK_STACK_INCLUSIVE);
         } else {
             showTasksList();
         }

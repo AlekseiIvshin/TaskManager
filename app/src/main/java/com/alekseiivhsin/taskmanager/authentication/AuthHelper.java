@@ -66,20 +66,31 @@ public class AuthHelper {
         return (accountRight & rightsMask) != UserRights.NONE;
     }
 
+    public boolean hasAccountRights(int rightsMask) {
+        Account currentAccount = getCurrentAccount();
+        if (currentAccount == null) {
+            return false;
+        }
+        int accountRight = getUserRights(currentAccount);
+        return (accountRight & rightsMask) != UserRights.NONE;
+    }
+
+    // TODO: STUB!
+    public Account getCurrentAccount() {
+        Account[] accounts = getAccounts();
+        if (accounts.length == 0) {
+            return null;
+        }
+        return accounts[0];
+    }
+
     public String getAuthToken(Account account) {
         return mAccountManager.getUserData(account, AccountManager.KEY_AUTHTOKEN);
     }
 
-    public String getAuthToken(){
-        Account[] accounts = getAccounts();
-        String authToken = null;
-        for(Account account: accounts) {
-            authToken = getAuthToken(account);
-            if(authToken != null){
-                break;
-            }
-        }
-        return authToken;
+    public String getAuthToken() {
+        Account account = getCurrentAccount();
+        return getAuthToken(account);
     }
 
     public void removeAccounts(Activity activity) {
@@ -93,7 +104,7 @@ public class AuthHelper {
         }
     }
 
-    public boolean isNeedAuthenticateUser(){
+    public boolean isNeedAuthenticateUser() {
         return getAccounts().length == 0;
     }
 }

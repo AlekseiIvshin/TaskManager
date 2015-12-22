@@ -1,8 +1,8 @@
 package com.alekseiivhsin.taskmanager.fragments.signin;
 
-import android.support.test.espresso.ViewInteraction;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
+import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
 import com.alekseiivhsin.taskmanager.App;
@@ -12,7 +12,7 @@ import com.alekseiivhsin.taskmanager.authentication.UserRights;
 import com.alekseiivhsin.taskmanager.ioc.Graph;
 import com.alekseiivhsin.taskmanager.ioc.MockedGraph;
 import com.alekseiivhsin.taskmanager.ioc.StubNetworkModule;
-import com.alekseiivhsin.taskmanager.network.model.SignInResponse;
+import com.alekseiivhsin.taskmanager.network.responses.SignInResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.mockwebserver.MockResponse;
@@ -36,14 +36,19 @@ import static android.support.test.espresso.action.ViewActions.typeText;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.isEnabled;
+import static android.support.test.espresso.matcher.ViewMatchers.withHint;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
 import static org.hamcrest.CoreMatchers.allOf;
+import static org.hamcrest.CoreMatchers.anyOf;
 import static org.hamcrest.Matchers.not;
 
 /**
  * Created on 18/12/2015.
  */
 @RunWith(AndroidJUnit4.class)
+@LargeTest
+@Ignore
 public class SignInFragmentTest {
 
     public static final String TEST_LEAD_LOGIN = "lead";
@@ -82,6 +87,12 @@ public class SignInFragmentTest {
         activityTestRule.getActivity().showSignIn();
     }
 
+    @AfterClass
+    public static void close() throws IOException {
+        server.shutdown();
+    }
+
+
     @Test
     public void onLoad_checkOnAllNeedControllers() {
         onView(withId(R.id.input_login)).check(matches(isDisplayed()));
@@ -91,35 +102,65 @@ public class SignInFragmentTest {
     }
 
     @Test
-    public void onSubmit_showErrorMessageWhenCannotSignIn() throws IOException, InterruptedException {
+    public void onSubmit_showErrorWhenPasswordIsEmpty() throws IOException, InterruptedException {
         // Given
-        ViewInteraction signIn = onView(withId(R.id.sign_in));
-        ViewInteraction loginInput = onView(withId(R.id.input_login));
-        ViewInteraction passwordInput = onView(withId(R.id.input_password));
-        ViewInteraction mErrorMessage = onView(withId(R.id.error_message));
-
         server.enqueue(new MockResponse().setResponseCode(400).setHeader("Cache-Control", "no-cache"));
 
         // When
-        loginInput.perform(typeText(TEST_LEAD_LOGIN));
+        onView(withId(R.id.input_login)).perform(typeText(TEST_LEAD_LOGIN));
         closeSoftKeyboard();
-        passwordInput.perform(typeText(TEST_LEAD_PASSWORD));
-        closeSoftKeyboard();
-        signIn.perform(click());
+        onView(withId(R.id.sign_in)).perform(click());
 
         // Then
-        mErrorMessage.check(matches(isDisplayed()));
+        onView(
+                anyOf(
+                        withText("Password should not be empty"),
+                        withHint("Password should not be empty")))
+                .check(matches(
+                        isDisplayed()));
+    }
+
+
+    @Test
+    public void onSubmit_showErrorWhenLoginIsEmpty() throws IOException, InterruptedException {
+        // Given
+        server.enqueue(new MockResponse().setResponseCode(400).setHeader("Cache-Control", "no-cache"));
+
+        // When
+        onView(withId(R.id.input_password)).perform(typeText(TEST_LEAD_PASSWORD));
+        closeSoftKeyboard();
+        onView(withId(R.id.sign_in)).perform(click());
+
+        // Then
+        onView(
+                anyOf(
+                        withText("User name should not be empty"),
+                        withHint("User name should not be empty")))
+                .check(matches(
+                        isDisplayed()));
+    }
+
+    @Test
+    public void onSubmit_showErrorMessageWhenCannotSignIn() throws IOException, InterruptedException {
+        // Given
+        server.enqueue(new MockResponse().setResponseCode(400).setHeader("Cache-Control", "no-cache"));
+
+        // When
+        onView(withId(R.id.input_login)).perform(typeText(TEST_LEAD_LOGIN));
+        closeSoftKeyboard();
+        onView(withId(R.id.input_password)).perform(typeText(TEST_LEAD_PASSWORD));
+        closeSoftKeyboard();
+        onView(withId(R.id.sign_in)).perform(click());
+
+        // Then
+        onView(withId(R.id.error_message))
+                .check(matches(isDisplayed()));
     }
 
     @Test
     @Ignore
     public void onSubmit_checkNetworkCall() throws IOException, InterruptedException {
         // Given
-        ViewInteraction signIn = onView(withId(R.id.sign_in));
-        ViewInteraction loginInput = onView(withId(R.id.input_login));
-        ViewInteraction passwordInput = onView(withId(R.id.input_password));
-        ViewInteraction mErrorMessage = onView(withId(R.id.error_message));
-
         SignInResponse successResponse = new SignInResponse();
         successResponse.userRights = UserRights.NONE;
         successResponse.authToken = "testAuthToken";
@@ -130,14 +171,8 @@ public class SignInFragmentTest {
         server.enqueue(new MockResponse().setBody(stringWriter.toString()).addHeader("Content-Type", "application/json; charset=utf-8"));
 
         // When
-        loginInput.perform(typeText(TEST_LEAD_LOGIN));
-        passwordInput.perform(typeText(TEST_LEAD_PASSWORD));
-        signIn.perform(click());
-
-    }
-
-    @AfterClass
-    public static void close() throws IOException {
-        server.shutdown();
+        onView(withId(R.id.input_login)).perform(typeText(TEST_LEAD_LOGIN));
+        onView(withId(R.id.input_password)).perform(typeText(TEST_LEAD_PASSWORD));
+        onView(withId(R.id.sign_in)).perform(click());
     }
 }

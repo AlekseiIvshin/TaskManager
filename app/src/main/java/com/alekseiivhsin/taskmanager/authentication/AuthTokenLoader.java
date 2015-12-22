@@ -7,8 +7,9 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.alekseiivhsin.taskmanager.App;
-import com.alekseiivhsin.taskmanager.network.model.SignInResponse;
-import com.alekseiivhsin.taskmanager.network.AuthApiService;
+import com.alekseiivhsin.taskmanager.network.requests.SignInRequestBody;
+import com.alekseiivhsin.taskmanager.network.responses.SignInResponse;
+import com.alekseiivhsin.taskmanager.network.services.AuthApiService;
 
 import java.io.IOException;
 
@@ -52,7 +53,7 @@ public class AuthTokenLoader extends AsyncTaskLoader<Intent> {
     public Intent loadInBackground() {
         SignInResponse signInResponse;
         try {
-            signInResponse = mAuthApiService.login(mUserName, mPassword, mAccountType).execute().body();
+            signInResponse = mAuthApiService.signIn(new SignInRequestBody(mUserName, mPassword, mAccountType)).execute().body();
         } catch (IOException e) {
             return new Intent();
         }

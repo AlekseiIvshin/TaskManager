@@ -3,14 +3,11 @@ package com.alekseiivhsin.taskmanager.ioc;
 import android.content.Context;
 
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
-import com.alekseiivhsin.taskmanager.authentication.UserRights;
-import com.alekseiivhsin.taskmanager.network.model.SignInResponse;
-import com.alekseiivhsin.taskmanager.network.AuthApiService;
+import com.alekseiivhsin.taskmanager.network.services.AuthApiService;
 
 import dagger.Module;
 import dagger.Provides;
 import retrofit.Retrofit;
-import retrofit.http.Query;
 
 /**
  * Created by Aleksei Ivshin

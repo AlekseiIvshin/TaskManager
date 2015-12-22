@@ -87,7 +87,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity implemen
             return false;
         }
 
-        // TODO: add other validations as login mask, login length and etc
+        // TODO: add other validations as signIn mask, signIn length and etc
         return true;
     }
 
@@ -98,7 +98,7 @@ public class AuthenticatorActivity extends AccountAuthenticatorActivity implemen
             return false;
         }
 
-        // TODO: add other validations as login mask, login length and etc
+        // TODO: add other validations as signIn mask, signIn length and etc
         return true;
     }
 

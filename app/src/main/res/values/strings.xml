@@ -7,8 +7,8 @@
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="accountType">com.alivshin.taskmanager</string>
-    <string name="error.login.empty">Login is empty!</string>
-    <string name="error.password.empty">Password is empty!</string>
+    <string name="error.login.empty">User name should not be empty</string>
+    <string name="error.password.empty">Password should not be empty</string>
     <string name="drawer.task.list.pool">Tasks list</string>
     <string name="drawer.task.list.user">My tasks</string>
     <string name="drawer.pool.list">Pool</string>

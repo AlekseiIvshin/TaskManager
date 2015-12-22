@@ -1,7 +1,7 @@
-package com.alekseiivhsin.taskmanager.network;
+package com.alekseiivhsin.taskmanager.network.services;
 
 import com.alekseiivhsin.taskmanager.models.Task;
-import com.alekseiivhsin.taskmanager.network.model.TaskListResponse;
+import com.alekseiivhsin.taskmanager.network.responses.TaskListResponse;
 
 import retrofit.Call;
 import retrofit.http.GET;
@@ -17,5 +17,5 @@ public interface TaskApiService {
     Call<TaskListResponse> getTaskList(@Query("authToken") String authToken);
 
     @GET("/api/task/{id}")
-    Call<Task> getTask(@Path("id") String taskId, @Query("authToken") String authToken);
+    Call<Task> getTask(@Path("id") int taskId, @Query("authToken") String authToken);
 }

@@ -3,7 +3,7 @@ package com.alekseiivhsin.taskmanager.ioc;
 import android.app.Application;
 
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
-import com.alekseiivhsin.taskmanager.network.AuthApiService;
+import com.alekseiivhsin.taskmanager.network.services.AuthApiService;
 
 import org.mockito.Mockito;
 

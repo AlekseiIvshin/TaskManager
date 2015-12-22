@@ -1,4 +1,4 @@
-package com.alekseiivhsin.taskmanager.network.model;
+package com.alekseiivhsin.taskmanager.network.responses;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;

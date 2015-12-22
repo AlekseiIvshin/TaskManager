@@ -1,7 +1,8 @@
-package com.alekseiivhsin.taskmanager.network;
+package com.alekseiivhsin.taskmanager.network.requests;
 
 import com.alekseiivhsin.taskmanager.App;
-import com.alekseiivhsin.taskmanager.network.model.TaskListResponse;
+import com.alekseiivhsin.taskmanager.network.responses.TaskListResponse;
+import com.alekseiivhsin.taskmanager.network.services.TaskApiService;
 import com.octo.android.robospice.request.SpiceRequest;
 
 import javax.inject.Inject;

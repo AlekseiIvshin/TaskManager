@@ -4,9 +4,11 @@ import android.app.Application;
 
 import com.alekseiivhsin.taskmanager.MainActivity;
 import com.alekseiivhsin.taskmanager.authentication.AuthTokenLoader;
+import com.alekseiivhsin.taskmanager.fragments.TaskDetailsFragment;
 import com.alekseiivhsin.taskmanager.fragments.TaskListFragment;
-import com.alekseiivhsin.taskmanager.network.SignInRequest;
-import com.alekseiivhsin.taskmanager.network.TaskListRequest;
+import com.alekseiivhsin.taskmanager.network.requests.SignInRequest;
+import com.alekseiivhsin.taskmanager.network.requests.TaskDetailsRequest;
+import com.alekseiivhsin.taskmanager.network.requests.TaskListRequest;
 
 import javax.inject.Singleton;
 
@@ -32,6 +34,10 @@ public interface Graph {
     void inject(SignInRequest signInRequest);
 
     void inject(TaskListRequest taskListRequest);
+
+    void inject(TaskDetailsRequest taskDetailsRequest);
+
+    void inject(TaskDetailsFragment taskDetailsFragment);
 
     final class Initializer {
         public static Graph init(Application app) {

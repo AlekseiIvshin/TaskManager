@@ -16,8 +16,8 @@ import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.R;
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
 import com.alekseiivhsin.taskmanager.authentication.UserRights;
-import com.alekseiivhsin.taskmanager.network.TaskListRequest;
-import com.alekseiivhsin.taskmanager.network.model.TaskListResponse;
+import com.alekseiivhsin.taskmanager.network.requests.TaskListRequest;
+import com.alekseiivhsin.taskmanager.network.responses.TaskListResponse;
 import com.alekseiivhsin.taskmanager.robospice.TaskSpiceService;
 import com.alekseiivhsin.taskmanager.views.adapters.TaskListAdapter;
 import com.octo.android.robospice.SpiceManager;
@@ -31,9 +31,8 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class TaskListFragment extends Fragment {
+public class TaskListFragment extends SpicedFragment {
 
-    public static final int TASK_LIST_LOADER_ID = 0;
     private static final String TAG = TaskListFragment.class.getSimpleName();
 
     @Bind(R.id.list_tasks)
@@ -46,8 +45,6 @@ public class TaskListFragment extends Fragment {
 
     @Inject
     AuthHelper mAuthHelper;
-
-    protected SpiceManager spiceManager = new SpiceManager(TaskSpiceService.class);
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -77,12 +74,12 @@ public class TaskListFragment extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-        spiceManager.start(getActivity());
 
         TaskListRequest request = new TaskListRequest(mAuthHelper.getAuthToken());
         spiceManager.execute(request, new RequestListener<TaskListResponse>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
+                Log.v(TAG, "Error while load tasks ", spiceException);
                 mTaskListAdapter.setTaskList(Collections.EMPTY_LIST);
             }
 
@@ -93,26 +90,7 @@ public class TaskListFragment extends Fragment {
         });
     }
 
-    @Override
-    public void onStop() {
-        if (spiceManager.isStarted()) {
-            spiceManager.shouldStop();
-        }
-        super.onStop();
-    }
-
     protected boolean isNeedShowNewTaskButton() {
-        Account[] accounts = mAuthHelper.getAccounts();
-
-        Log.v(TAG, "Accounts count = " + accounts.length);
-        for (Account account : accounts) {
-            if (mAuthHelper.hasAccountRights(account, UserRights.CAN_CREATE_TASK)) {
-                Log.v(TAG, "There is account with need rights: UserRights.CAN_CREATE_TASK=" + UserRights.CAN_CREATE_TASK);
-                return true;
-            }
-            Log.v(TAG, String.format("Account %s, rights = %d don't has need rights: UserRights.CAN_CREATE_TASK = %d", account, mAuthHelper.getUserRights(account), UserRights.CAN_CREATE_TASK));
-        }
-        Log.v(TAG, "There is not account with need rights: UserRights.CAN_CREATE_TASK=" + UserRights.CAN_CREATE_TASK);
-        return false;
+        return mAuthHelper.hasAccountRights(UserRights.CAN_CREATE_TASK);
     }
 }

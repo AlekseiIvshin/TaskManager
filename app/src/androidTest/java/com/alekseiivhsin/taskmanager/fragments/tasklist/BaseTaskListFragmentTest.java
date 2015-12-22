@@ -32,7 +32,7 @@ public abstract class BaseTaskListFragmentTest extends BaseAlreadyLoggedTest {
     protected int POOL_LEAD_RIGHTS = UserRights.CAN_VIEW_TASK | UserRights.CAN_UPDATE_TASK | UserRights.CAN_CREATE_TASK | UserRights.CAN_CLOSE_TASK;
     protected int POOL_MEMBER_RIGHTS = UserRights.CAN_VIEW_TASK | UserRights.CAN_UPDATE_TASK;
 
-    public static final String TASK_LIST_TAG = "taskmanager.fragments.TASK_LIST_TAG";
+    public static final String TASK_LIST_TAG = "taskmanager.fragments.TAG_TASK_LIST";
 
     protected AppCompatActivity mActivity;
 

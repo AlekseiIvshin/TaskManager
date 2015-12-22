@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -19,8 +20,8 @@ import android.widget.TextView;
 
 import com.alekseiivhsin.taskmanager.R;
 import com.alekseiivhsin.taskmanager.authentication.UserRights;
-import com.alekseiivhsin.taskmanager.network.SignInRequest;
-import com.alekseiivhsin.taskmanager.network.model.SignInResponse;
+import com.alekseiivhsin.taskmanager.network.requests.SignInRequest;
+import com.alekseiivhsin.taskmanager.network.responses.SignInResponse;
 import com.alekseiivhsin.taskmanager.robospice.TaskSpiceService;
 import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -30,13 +31,10 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SignInFragment extends Fragment {
+public class SignInFragment extends SpicedFragment {
 
     public static final String EXTRA_IS_ADDING_NEW_ACCOUNT = "EXTRA_IS_ADDING_NEW_ACCOUNT";
     private static final String TAG = SignInFragment.class.getSimpleName();
-
-
-    protected SpiceManager spiceManager = new SpiceManager(TaskSpiceService.class);
 
     private AccountManager mAccountManager;
 
@@ -98,35 +96,22 @@ public class SignInFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_sign_in, container, false);
         ButterKnife.bind(this, rootView);
-
         return rootView;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        spiceManager.start(getActivity());
-    }
-
-    @Override
-    public void onStop() {
-        if (spiceManager.isStarted()) {
-            spiceManager.shouldStop();
-        }
-        super.onStop();
     }
 
     @OnClick(R.id.sign_in)
     public void submit() {
 
+        String userName = mLogin.getText().toString();
+        String password = mPassword.getText().toString();
 
-        if (validateInputFields()) {
+        boolean isUserNameValid = validateLogin(userName);
+        boolean isPasswordValid = validatePassword(password);
+
+        if (isUserNameValid && isPasswordValid) {
             onRequestStarted();
-            String loginName = mLogin.getText().toString();
-            String password = mPassword.getText().toString();
 
-            SignInRequest request = new SignInRequest(loginName, password, mAccountType);
-
+            SignInRequest request = new SignInRequest(userName, password, mAccountType);
 
             spiceManager.execute(request, new RequestListener<SignInResponse>() {
                 @Override
@@ -149,36 +134,31 @@ public class SignInFragment extends Fragment {
         }
     }
 
-    public boolean validateInputFields() {
-        boolean isValid = validateLogin();
-        isValid = isValid & validatePassword();
-        return isValid;
-    }
-
-    public boolean validateLogin() {
-        String loginName = mLogin.getText().toString();
-        if (loginName.isEmpty()) {
+    public boolean validateLogin(String userName) {
+        if (TextUtils.isEmpty(userName)) {
             mLoginInputLayout.setError(getString(R.string.error_login_empty));
             return false;
         }
 
-        // TODO: add other validations as login mask, login length and etc
+        // TODO: add other validations as signIn mask, signIn length and etc
         return true;
     }
 
-    public boolean validatePassword() {
-        String password = mPassword.getText().toString();
-        if (password.isEmpty()) {
+    public boolean validatePassword(String password) {
+        if (TextUtils.isEmpty(password)) {
             mPasswordInputLayout.setError(getString(R.string.error_password_empty));
             return false;
         }
 
-        // TODO: add other validations as login mask, login length and etc
+        // TODO: add other validations as signIn mask, signIn length and etc
         return true;
     }
 
     public void onRequestStarted() {
         mErrorMessages.setVisibility(View.GONE);
+        mLoginInputLayout.setError("");
+        mPasswordInputLayout.setError("");
+
         InputMethodManager inputMethodManager = (InputMethodManager) getActivity().getSystemService(Activity.INPUT_METHOD_SERVICE);
         inputMethodManager.hideSoftInputFromWindow(getActivity().getCurrentFocus().getWindowToken(), 0);
 
@@ -218,8 +198,8 @@ public class SignInFragment extends Fragment {
             mAccountManager.setPassword(account, password);
         }
 
-        mCallbacks.onSignedIn(Activity.RESULT_OK);
         unlockInputFields();
+        mCallbacks.onSignedIn(Activity.RESULT_OK);
     }
 
     public void showErrorMessage(String message) {
