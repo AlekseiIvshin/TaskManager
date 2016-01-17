@@ -1,6 +1,5 @@
 package com.alekseiivhsin.taskmanager.fragments.tasklist;
 
-import android.support.test.espresso.Espresso;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
@@ -10,24 +9,18 @@ import com.alekseiivhsin.taskmanager.R;
 import com.alekseiivhsin.taskmanager.SpicedActivity;
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
 import com.alekseiivhsin.taskmanager.authentication.UserRights;
-import com.alekseiivhsin.taskmanager.idlingresources.RobospiceIdlingResource;
+import com.alekseiivhsin.taskmanager.fragments.BaseSpicedInjectedFragmentTest;
 import com.alekseiivhsin.taskmanager.ioc.AuthModule;
 import com.alekseiivhsin.taskmanager.ioc.Graph;
 import com.alekseiivhsin.taskmanager.ioc.MockedGraph;
 import com.alekseiivhsin.taskmanager.ioc.StubNetworkModule;
 import com.alekseiivhsin.taskmanager.models.Task;
 import com.alekseiivhsin.taskmanager.network.responses.TaskListResponse;
-import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.octo.android.robospice.SpiceManager;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.mockwebserver.MockResponse;
-import com.squareup.okhttp.mockwebserver.MockWebServer;
 
-import org.junit.After;
-import org.junit.AfterClass;
-import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -51,7 +44,7 @@ import static org.mockito.Mockito.when;
  */
 @LargeTest
 @RunWith(AndroidJUnit4.class)
-public class TaskListFragmentTest {
+public class TaskListFragmentTest extends BaseSpicedInjectedFragmentTest {
 
     @Rule
     public ActivityTestRule<SpicedActivity> activityTestRule = new ActivityTestRule<>(SpicedActivity.class);
@@ -60,35 +53,7 @@ public class TaskListFragmentTest {
 
     private static final String MOCK_TASKLIST = "{\"tasks\":[{\"name\":\"Task 1\"},{\"name\":\"Task 2\"},{\"name\":\"Task 3\"}]}";
 
-    private static MockWebServer server;
-
     private AuthHelper mockAuthHelper;
-
-    private RobospiceIdlingResource robospiceIdlingResource;
-
-    @BeforeClass
-    public static void init() throws IOException {
-        server = new MockWebServer();
-        server.start();
-    }
-
-    @Before
-    public void setUp() {
-        initObjectGraph();
-
-        robospiceIdlingResource = new RobospiceIdlingResource(getSpiceManager());
-        Espresso.registerIdlingResources(robospiceIdlingResource);
-    }
-
-    @After
-    public void tearDown() {
-        Espresso.unregisterIdlingResources(robospiceIdlingResource);
-    }
-
-    @AfterClass
-    public static void finish() throws IOException {
-        server.shutdown();
-    }
 
     @Test
     public void onLoad_shouldLoadTaskList() throws IOException {
@@ -141,23 +106,13 @@ public class TaskListFragmentTest {
         onView(withId(R.id.add_new_task)).check(matches(isDisplayed()));
     }
 
-    private SpiceManager getSpiceManager() {
+    @Override
+    protected SpiceManager getSpiceManager() {
         return activityTestRule.getActivity().spiceManager;
     }
 
-    private void enqueueResponse(TaskListResponse taskListResponse) throws IOException {
-        StringWriter stringWriter = new StringWriter();
-
-        MAPPER.writeValue(stringWriter, taskListResponse);
-
-        server.enqueue(new MockResponse().setBody(stringWriter.toString()));
-    }
-
-    private void enqueueResponse(String taskListResponse) throws IOException {
-        server.enqueue(new MockResponse().setBody(taskListResponse));
-    }
-
-    private void initObjectGraph(){
+    @Override
+    protected void onInitObjectGraph() {
         HttpUrl baseUrl = server.url("");
 
         StubNetworkModule stubNetworkModule = new StubNetworkModule();
@@ -174,4 +129,17 @@ public class TaskListFragmentTest {
         App.getInstance()
                 .setObjectGraph(mockedGraph);
     }
+
+    private void enqueueResponse(TaskListResponse taskListResponse) throws IOException {
+        StringWriter stringWriter = new StringWriter();
+
+        MAPPER.writeValue(stringWriter, taskListResponse);
+
+        server.enqueue(new MockResponse().setBody(stringWriter.toString()));
+    }
+
+    private void enqueueResponse(String taskListResponse) throws IOException {
+        server.enqueue(new MockResponse().setBody(taskListResponse));
+    }
+
 }
