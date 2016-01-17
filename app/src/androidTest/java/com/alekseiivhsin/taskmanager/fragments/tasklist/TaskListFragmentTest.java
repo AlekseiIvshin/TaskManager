@@ -6,10 +6,9 @@ import android.support.test.runner.AndroidJUnit4;
 import android.util.Log;
 
 import com.alekseiivhsin.taskmanager.App;
-import com.alekseiivhsin.taskmanager.MainActivity;
+import com.alekseiivhsin.taskmanager.SpicedActivity;
 import com.alekseiivhsin.taskmanager.R;
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
-import com.alekseiivhsin.taskmanager.fragments.SpicedFragment;
 import com.alekseiivhsin.taskmanager.idlingresources.RobospiceIdlingResource;
 import com.alekseiivhsin.taskmanager.ioc.AuthModule;
 import com.alekseiivhsin.taskmanager.ioc.Graph;
@@ -22,8 +21,6 @@ import com.octo.android.robospice.SpiceManager;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
-
-import junit.framework.Assert;
 
 import org.junit.After;
 import org.junit.AfterClass;
@@ -54,8 +51,10 @@ import static org.mockito.Mockito.when;
 @RunWith(AndroidJUnit4.class)
 public class TaskListFragmentTest {
 
+    public static final String TAG = TaskListFragmentTest.class.getSimpleName();
+
     @Rule
-    public ActivityTestRule<MainActivity> activityTestRule = new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<SpicedActivity> activityTestRule = new ActivityTestRule<>(SpicedActivity.class);
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
@@ -64,6 +63,7 @@ public class TaskListFragmentTest {
     AuthHelper mockAuthHelper;
 
     RobospiceIdlingResource robospiceIdlingResource;
+
 
     @BeforeClass
     public static void init() throws IOException {
@@ -90,14 +90,15 @@ public class TaskListFragmentTest {
         App.getInstance()
                 .setObjectGraph(mockedGraph);
 
+
+        robospiceIdlingResource = new RobospiceIdlingResource(getSpiceManager());
+        Espresso.registerIdlingResources(robospiceIdlingResource);
+
     }
 
     @After
     public void tearDown(){
-        if(robospiceIdlingResource!=null){
-            Espresso.unregisterIdlingResources(robospiceIdlingResource);
-            robospiceIdlingResource = null;
-        }
+        Espresso.unregisterIdlingResources(robospiceIdlingResource);
     }
 
     @AfterClass
@@ -115,28 +116,28 @@ public class TaskListFragmentTest {
 
         MAPPER.writeValue(stringWriter, taskListResponse);
 
-        server.enqueue(new MockResponse().addHeader("Content-Type", "application/json; charset=utf-8").setBody(stringWriter.toString()));
+        String bodyResponse = "{\"tasks\":[{\"name\":\"Task 1\"},{\"name\":\"Task 2\"},{\"name\":\"Task 3\"}]}";//stringWriter.toString();
+
+        Log.v(TAG, "Prepared response body: " + bodyResponse);
+
+        server.enqueue(new MockResponse().setBody(bodyResponse));
 
         when(mockAuthHelper.getAuthToken()).thenReturn("STUB_AUTH_TOKEN");
         when(mockAuthHelper.hasAccountRights(anyInt())).thenReturn(true);
 
         // When
         activityTestRule.getActivity().showTasksList();
-        onView(withId(R.id.fragment_container)).check(matches(isDisplayed()));
-        robospiceIdlingResource = new RobospiceIdlingResource(getSpiceManager());
-        Espresso.registerIdlingResources(robospiceIdlingResource);
 
         // Then
-        onView(withId(R.id.list_tasks)).check(matches(withChild(withText("Task 1"))));
+        onView(withId(R.id.fragment_container)).check(matches(isDisplayed()));
+        onView(withText("Task 1")).check(matches(isDisplayed()));
+        onView(withText("Task 2")).check(matches(isDisplayed()));
+        onView(withText("Task 3")).check(matches(isDisplayed()));
+
     }
 
     private SpiceManager getSpiceManager(){
-        Log.v("ZAAAD", "Fragments count " + activityTestRule.getActivity().getSupportFragmentManager());
-        SpicedFragment spicedFragment = (SpicedFragment) activityTestRule.getActivity().getSupportFragmentManager()
-                .findFragmentByTag(MainActivity.TAG_TASK_LIST);
-
-        return spicedFragment.spiceManager;
-
+        return activityTestRule.getActivity().spiceManager;
     }
 
 }

@@ -74,6 +74,7 @@ dependencies {
     // Retrofit
     compile 'com.squareup.retrofit:retrofit:2.0.0-beta2'
     compile 'com.squareup.retrofit:converter-gson:2.0.0-beta2'
+    compile 'com.squareup.retrofit:converter-jackson:2.0.0-beta2'
 
     // Robospice
     compile 'com.octo.android.robospice:robospice:1.4.14'

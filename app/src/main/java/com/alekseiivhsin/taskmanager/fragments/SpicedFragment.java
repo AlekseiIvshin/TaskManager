@@ -1,8 +1,9 @@
 package com.alekseiivhsin.taskmanager.fragments;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 
-import com.alekseiivhsin.taskmanager.robospice.TaskSpiceService;
+import com.alekseiivhsin.taskmanager.SpicedActivity;
 import com.octo.android.robospice.SpiceManager;
 
 /**
@@ -10,19 +11,19 @@ import com.octo.android.robospice.SpiceManager;
  */
 public class SpicedFragment extends Fragment {
 
-    public SpiceManager spiceManager = new SpiceManager(TaskSpiceService.class);
+    protected SpiceManager spiceManager;
 
     @Override
-    public void onStart() {
-        super.onStart();
-        spiceManager.start(getActivity());
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof SpicedActivity) {
+            spiceManager = ((SpicedActivity) context).spiceManager;
+        }
     }
 
     @Override
-    public void onStop() {
-        if (spiceManager.isStarted()) {
-            spiceManager.shouldStop();
-        }
-        super.onStop();
+    public void onDetach() {
+        spiceManager = null;
+        super.onDetach();
     }
 }

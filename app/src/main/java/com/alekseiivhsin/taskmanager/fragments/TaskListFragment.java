@@ -1,10 +1,8 @@
 package com.alekseiivhsin.taskmanager.fragments;
 
-import android.accounts.Account;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -16,11 +14,10 @@ import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.R;
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
 import com.alekseiivhsin.taskmanager.authentication.UserRights;
+import com.alekseiivhsin.taskmanager.models.Task;
 import com.alekseiivhsin.taskmanager.network.requests.TaskListRequest;
 import com.alekseiivhsin.taskmanager.network.responses.TaskListResponse;
-import com.alekseiivhsin.taskmanager.robospice.TaskSpiceService;
 import com.alekseiivhsin.taskmanager.views.adapters.TaskListAdapter;
-import com.octo.android.robospice.SpiceManager;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 
@@ -85,9 +82,14 @@ public class TaskListFragment extends SpicedFragment {
 
             @Override
             public void onRequestSuccess(TaskListResponse taskListResponse) {
+                Log.v(TAG, "Loaded Task: " +taskListResponse);
+                for (Task task : taskListResponse.taskList) {
+                    Log.v(TAG, "Loaded Task: " + task.name);
+                }
                 mTaskListAdapter.setTaskList(taskListResponse.taskList);
             }
         });
+
     }
 
     protected boolean isNeedShowNewTaskButton() {

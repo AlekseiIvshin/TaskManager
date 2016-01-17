@@ -2,8 +2,9 @@ package com.alekseiivhsin.taskmanager.ioc;
 
 import android.app.Application;
 
-import com.alekseiivhsin.taskmanager.MainActivity;
+import com.alekseiivhsin.taskmanager.SpicedActivity;
 import com.alekseiivhsin.taskmanager.authentication.AuthTokenLoader;
+import com.alekseiivhsin.taskmanager.fragments.SpicedFragment;
 import com.alekseiivhsin.taskmanager.fragments.TaskDetailsFragment;
 import com.alekseiivhsin.taskmanager.fragments.TaskListFragment;
 import com.alekseiivhsin.taskmanager.network.requests.SignInRequest;
@@ -29,7 +30,7 @@ public interface Graph {
 
     void inject(TaskListFragment taskListFragment);
 
-    void inject(MainActivity mainActivity);
+    void inject(SpicedActivity spicedActivity);
 
     void inject(SignInRequest signInRequest);
 
@@ -38,6 +39,8 @@ public interface Graph {
     void inject(TaskDetailsRequest taskDetailsRequest);
 
     void inject(TaskDetailsFragment taskDetailsFragment);
+
+    void inject(SpicedFragment spicedFragment);
 
     final class Initializer {
         public static Graph init(Application app) {

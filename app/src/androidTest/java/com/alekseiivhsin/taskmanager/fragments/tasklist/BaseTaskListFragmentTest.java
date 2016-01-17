@@ -1,12 +1,11 @@
 package com.alekseiivhsin.taskmanager.fragments.tasklist;
 
-import android.accounts.Account;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.support.v7.app.AppCompatActivity;
 
 import com.alekseiivhsin.taskmanager.App;
-import com.alekseiivhsin.taskmanager.MainActivity;
+import com.alekseiivhsin.taskmanager.SpicedActivity;
 import com.alekseiivhsin.taskmanager.R;
 import com.alekseiivhsin.taskmanager.authentication.UserRights;
 import com.alekseiivhsin.taskmanager.fragments.BaseAlreadyLoggedTest;
@@ -15,12 +14,9 @@ import com.alekseiivhsin.taskmanager.ioc.MockAuthModule;
 import com.alekseiivhsin.taskmanager.ioc.MockedGraph;
 
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.runner.RunWith;
-
-import static org.mockito.Mockito.when;
 
 /**
  * Created on 14/12/2015.
@@ -37,8 +33,8 @@ public abstract class BaseTaskListFragmentTest extends BaseAlreadyLoggedTest {
     protected AppCompatActivity mActivity;
 
     @Rule
-    public ActivityTestRule<MainActivity> mActivityTestRule
-            = new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<SpicedActivity> mActivityTestRule
+            = new ActivityTestRule<>(SpicedActivity.class);
 
     protected MockAuthModule mMockAuthModule;
 

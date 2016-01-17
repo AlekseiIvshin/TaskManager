@@ -1,6 +1,7 @@
 package com.alekseiivhsin.taskmanager.idlingresources;
 
 import android.support.test.espresso.IdlingResource;
+import android.util.Log;
 
 import com.octo.android.robospice.SpiceManager;
 
@@ -8,6 +9,8 @@ import com.octo.android.robospice.SpiceManager;
  * Created on 22/12/2015.
  */
 public class RobospiceIdlingResource implements IdlingResource {
+
+    private static final String TAG = RobospiceIdlingResource.class.getSimpleName();
 
     public final SpiceManager spiceManager;
     ResourceCallback resourceCallback;
@@ -24,6 +27,7 @@ public class RobospiceIdlingResource implements IdlingResource {
     @Override
     public boolean isIdleNow() {
         boolean idle = idle();
+
         if (idle && resourceCallback != null) {
             resourceCallback.onTransitionToIdle();
         }
@@ -31,6 +35,9 @@ public class RobospiceIdlingResource implements IdlingResource {
     }
 
     private boolean idle() {
+        Log.v(TAG,
+                String.format("Is idling: (spiceManager == null)=>%b; (!spiceManager.isStarted())=>%b; (spiceManager.getPendingRequestCount() == 0)=>%b",
+                        spiceManager == null, !spiceManager.isStarted(), spiceManager.getPendingRequestCount() == 0) );
         return spiceManager == null || !spiceManager.isStarted() || spiceManager.getPendingRequestCount() == 0;
     }
 
