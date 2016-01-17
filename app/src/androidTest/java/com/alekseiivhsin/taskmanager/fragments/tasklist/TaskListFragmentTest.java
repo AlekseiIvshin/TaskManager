@@ -1,5 +1,6 @@
 package com.alekseiivhsin.taskmanager.fragments.tasklist;
 
+import android.accounts.Account;
 import android.support.test.espresso.Espresso;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -9,6 +10,7 @@ import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.SpicedActivity;
 import com.alekseiivhsin.taskmanager.R;
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
+import com.alekseiivhsin.taskmanager.authentication.UserRights;
 import com.alekseiivhsin.taskmanager.idlingresources.RobospiceIdlingResource;
 import com.alekseiivhsin.taskmanager.ioc.AuthModule;
 import com.alekseiivhsin.taskmanager.ioc.Graph;
@@ -41,6 +43,8 @@ import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withChild;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
 import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.CoreMatchers.not;
+import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -58,11 +62,16 @@ public class TaskListFragmentTest {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
+    private static final String MOCK_TASKLIST = "{\"tasks\":[{\"name\":\"Task 1\"},{\"name\":\"Task 2\"},{\"name\":\"Task 3\"}]}";
+
+    protected int POOL_LEAD_RIGHTS = UserRights.CAN_VIEW_TASK | UserRights.CAN_UPDATE_TASK | UserRights.CAN_CREATE_TASK | UserRights.CAN_CLOSE_TASK;
+    protected int POOL_MEMBER_RIGHTS = UserRights.CAN_VIEW_TASK | UserRights.CAN_UPDATE_TASK;
+
     private static MockWebServer server;
 
-    AuthHelper mockAuthHelper;
+    private AuthHelper mockAuthHelper;
 
-    RobospiceIdlingResource robospiceIdlingResource;
+    private RobospiceIdlingResource robospiceIdlingResource;
 
 
     @BeforeClass
@@ -106,7 +115,6 @@ public class TaskListFragmentTest {
         server.shutdown();
     }
 
-
     @Test
     public void onLoad_shouldLoadTaskList() throws IOException {
         // Given
@@ -116,11 +124,7 @@ public class TaskListFragmentTest {
 
         MAPPER.writeValue(stringWriter, taskListResponse);
 
-        String bodyResponse = "{\"tasks\":[{\"name\":\"Task 1\"},{\"name\":\"Task 2\"},{\"name\":\"Task 3\"}]}";//stringWriter.toString();
-
-        Log.v(TAG, "Prepared response body: " + bodyResponse);
-
-        server.enqueue(new MockResponse().setBody(bodyResponse));
+        server.enqueue(new MockResponse().setBody(stringWriter.toString()));
 
         when(mockAuthHelper.getAuthToken()).thenReturn("STUB_AUTH_TOKEN");
         when(mockAuthHelper.hasAccountRights(anyInt())).thenReturn(true);
@@ -130,10 +134,39 @@ public class TaskListFragmentTest {
 
         // Then
         onView(withId(R.id.fragment_container)).check(matches(isDisplayed()));
-        onView(withText("Task 1")).check(matches(isDisplayed()));
-        onView(withText("Task 2")).check(matches(isDisplayed()));
-        onView(withText("Task 3")).check(matches(isDisplayed()));
+        for(Task task: taskListResponse.taskList){
+            onView(withText(task.name)).check(matches(isDisplayed()));
+        }
+    }
 
+    @Test
+    public void onLoad_shouldHideAddingTaskWhenLoggedAsMember() throws IOException {
+        // Given
+        server.enqueue(new MockResponse().setBody(MOCK_TASKLIST));
+
+        when(mockAuthHelper.hasAccountRights(UserRights.CAN_CREATE_TASK)).thenReturn(false);
+        when(mockAuthHelper.getAuthToken()).thenReturn("STUB_AUTH_TOKEN");
+
+        // When
+        activityTestRule.getActivity().showTasksList();
+
+        // Then
+        onView(withId(R.id.add_new_task)).check(matches(not(isDisplayed())));
+    }
+
+    @Test
+    public void onLoad_shouldShowAddingTaskWhenLoggedAsLead() throws IOException {
+        // Given
+        server.enqueue(new MockResponse().setBody(MOCK_TASKLIST));
+
+        when(mockAuthHelper.hasAccountRights(UserRights.CAN_CREATE_TASK)).thenReturn(true);
+        when(mockAuthHelper.getAuthToken()).thenReturn("STUB_AUTH_TOKEN");
+
+        // When
+        activityTestRule.getActivity().showTasksList();
+
+        // Then
+        onView(withId(R.id.add_new_task)).check(matches(isDisplayed()));
     }
 
     private SpiceManager getSpiceManager(){
