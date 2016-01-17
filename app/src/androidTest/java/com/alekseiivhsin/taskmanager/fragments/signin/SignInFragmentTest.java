@@ -1,5 +1,6 @@
 package com.alekseiivhsin.taskmanager.fragments.signin;
 
+import android.support.test.espresso.Espresso;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
@@ -9,15 +10,18 @@ import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.SpicedActivity;
 import com.alekseiivhsin.taskmanager.R;
 import com.alekseiivhsin.taskmanager.authentication.UserRights;
+import com.alekseiivhsin.taskmanager.idlingresources.RobospiceIdlingResource;
 import com.alekseiivhsin.taskmanager.ioc.Graph;
 import com.alekseiivhsin.taskmanager.ioc.MockedGraph;
 import com.alekseiivhsin.taskmanager.ioc.StubNetworkModule;
 import com.alekseiivhsin.taskmanager.network.responses.SignInResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.octo.android.robospice.SpiceManager;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 import com.squareup.okhttp.mockwebserver.MockWebServer;
 
+import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -46,9 +50,8 @@ import static org.hamcrest.Matchers.not;
 /**
  * Created on 18/12/2015.
  */
-@RunWith(AndroidJUnit4.class)
 @LargeTest
-@Ignore
+@RunWith(AndroidJUnit4.class)
 public class SignInFragmentTest {
 
     public static final String TEST_LEAD_LOGIN = "lead";
@@ -59,17 +62,21 @@ public class SignInFragmentTest {
     private static MockWebServer server;
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
+    private RobospiceIdlingResource robospiceIdlingResource;
+
     @Rule
     public ActivityTestRule<SpicedActivity> activityTestRule
             = new ActivityTestRule<>(SpicedActivity.class);
 
     @BeforeClass
     public static void init() throws IOException {
-        Log.v(TAG, "BeforeClass");
         // https://github.com/square/okhttp/tree/master/mockwebserver
         server = new MockWebServer();
         server.start();
+    }
 
+    @Before
+    public void setUp() {
         HttpUrl baseUrl = server.url("");
 
         StubNetworkModule stubNetworkModule = new StubNetworkModule();
@@ -80,11 +87,17 @@ public class SignInFragmentTest {
                 .build();
         App.getInstance()
                 .setObjectGraph(mockedGraph);
+
+        robospiceIdlingResource = new RobospiceIdlingResource(getSpiceManager());
+        Espresso.registerIdlingResources(robospiceIdlingResource);
+
+        activityTestRule.getActivity().showSignIn();
     }
 
-    @Before
-    public void setUp() {
-        activityTestRule.getActivity().showSignIn();
+
+    @After
+    public void tearDown() {
+        Espresso.unregisterIdlingResources(robospiceIdlingResource);
     }
 
     @AfterClass
@@ -174,5 +187,9 @@ public class SignInFragmentTest {
         onView(withId(R.id.input_login)).perform(typeText(TEST_LEAD_LOGIN));
         onView(withId(R.id.input_password)).perform(typeText(TEST_LEAD_PASSWORD));
         onView(withId(R.id.sign_in)).perform(click());
+    }
+
+    private SpiceManager getSpiceManager() {
+        return activityTestRule.getActivity().spiceManager;
     }
 }
