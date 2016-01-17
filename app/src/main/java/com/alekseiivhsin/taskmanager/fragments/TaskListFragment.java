@@ -14,7 +14,6 @@ import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.R;
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
 import com.alekseiivhsin.taskmanager.authentication.UserRights;
-import com.alekseiivhsin.taskmanager.models.Task;
 import com.alekseiivhsin.taskmanager.network.requests.TaskListRequest;
 import com.alekseiivhsin.taskmanager.network.responses.TaskListResponse;
 import com.alekseiivhsin.taskmanager.views.adapters.TaskListAdapter;
@@ -77,16 +76,12 @@ public class TaskListFragment extends SpicedFragment {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 Log.v(TAG, "Error while load tasks ", spiceException);
-                mTaskListAdapter.setTaskList(Collections.EMPTY_LIST);
+                mTaskListAdapter.setTaskList(Collections.EMPTY_LIST, Collections.EMPTY_LIST);
             }
 
             @Override
             public void onRequestSuccess(TaskListResponse taskListResponse) {
-                Log.v(TAG, "Loaded Task: " +taskListResponse);
-                for (Task task : taskListResponse.taskList) {
-                    Log.v(TAG, "Loaded Task: " + task.name);
-                }
-                mTaskListAdapter.setTaskList(taskListResponse.taskList);
+                mTaskListAdapter.setTaskList(taskListResponse.assignedTasks, taskListResponse.unassignedTasks);
             }
         });
 

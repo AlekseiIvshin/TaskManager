@@ -13,6 +13,9 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TaskListResponse {
 
-    @JsonProperty("tasks")
-    public List<Task> taskList;
+    @JsonProperty("assigned_tasks")
+    public List<Task> assignedTasks;
+
+    @JsonProperty("unassigned_tasks")
+    public List<Task> unassignedTasks;
 }

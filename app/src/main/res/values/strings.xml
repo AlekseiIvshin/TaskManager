@@ -17,4 +17,6 @@
     <string name="navigation_drawer.open">Open</string>
     <string name="navigation_drawer.close">Close</string>
     <string name="error.message.default">Unknown error occured</string>
+    <string name="header.tasks.assigned">Assigned</string>
+    <string name="header.tasks.unassigned">Unassigned</string>
 </resources>

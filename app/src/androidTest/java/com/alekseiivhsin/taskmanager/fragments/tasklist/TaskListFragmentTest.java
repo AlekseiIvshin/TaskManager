@@ -3,6 +3,7 @@ package com.alekseiivhsin.taskmanager.fragments.tasklist;
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 import android.test.suitebuilder.annotation.LargeTest;
+import android.util.Log;
 
 import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.R;
@@ -27,7 +28,7 @@ import org.junit.runner.RunWith;
 
 import java.io.IOException;
 import java.io.StringWriter;
-import java.util.Arrays;
+import java.util.ArrayList;
 
 import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
@@ -51,15 +52,12 @@ public class TaskListFragmentTest extends BaseSpicedInjectedFragmentTest {
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
-    private static final String MOCK_TASKLIST = "{\"tasks\":[{\"name\":\"Task 1\"},{\"name\":\"Task 2\"},{\"name\":\"Task 3\"}]}";
-
     private AuthHelper mockAuthHelper;
 
     @Test
     public void onLoad_shouldLoadTaskList() throws IOException {
         // Given
-        TaskListResponse taskListResponse = new TaskListResponse();
-        taskListResponse.taskList = Arrays.asList(new Task("Task 1"), new Task("Task 2"), new Task("Task 3"));
+        TaskListResponse taskListResponse = generateTasksList(3, 3);
 
         enqueueResponse(taskListResponse);
 
@@ -71,7 +69,11 @@ public class TaskListFragmentTest extends BaseSpicedInjectedFragmentTest {
 
         // Then
         onView(withId(R.id.fragment_container)).check(matches(isDisplayed()));
-        for (Task task : taskListResponse.taskList) {
+        for (Task task : taskListResponse.assignedTasks) {
+            onView(withText(task.name)).check(matches(isDisplayed()));
+        }
+
+        for (Task task : taskListResponse.unassignedTasks) {
             onView(withText(task.name)).check(matches(isDisplayed()));
         }
     }
@@ -79,7 +81,7 @@ public class TaskListFragmentTest extends BaseSpicedInjectedFragmentTest {
     @Test
     public void onLoad_shouldHideAddingTaskWhenLoggedAsMember() throws IOException {
         // Given
-        enqueueResponse(MOCK_TASKLIST);
+        enqueueResponse(generateTasksList(2, 2));
 
         when(mockAuthHelper.hasAccountRights(UserRights.CAN_CREATE_TASK)).thenReturn(false);
         when(mockAuthHelper.getAuthToken()).thenReturn("STUB_AUTH_TOKEN");
@@ -94,7 +96,7 @@ public class TaskListFragmentTest extends BaseSpicedInjectedFragmentTest {
     @Test
     public void onLoad_shouldShowAddingTaskWhenLoggedAsLead() throws IOException {
         // Given
-        enqueueResponse(MOCK_TASKLIST);
+        enqueueResponse(generateTasksList(2,2));
 
         when(mockAuthHelper.hasAccountRights(UserRights.CAN_CREATE_TASK)).thenReturn(true);
         when(mockAuthHelper.getAuthToken()).thenReturn("STUB_AUTH_TOKEN");
@@ -104,6 +106,26 @@ public class TaskListFragmentTest extends BaseSpicedInjectedFragmentTest {
 
         // Then
         onView(withId(R.id.add_new_task)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void onLoad_showAssignedHeaderWhenAssignedTaskListIsNotEmpty(){
+        throw new IllegalStateException("No such implemented!");
+    }
+
+    @Test
+    public void onLoad_hideAssignedHeaderWhenAssignedTaskListIsEmpty(){
+        throw new IllegalStateException("No such implemented!");
+    }
+
+    @Test
+    public void onLoad_showUnassignedHeaderWhenAssignedTaskListIsNotEmpty(){
+        throw new IllegalStateException("No such implemented!");
+    }
+
+    @Test
+    public void onLoad_hideUnassignedHeaderWhenAssignedTaskListIsEmpty(){
+        throw new IllegalStateException("No such implemented!");
     }
 
     @Override
@@ -136,10 +158,26 @@ public class TaskListFragmentTest extends BaseSpicedInjectedFragmentTest {
         MAPPER.writeValue(stringWriter, taskListResponse);
 
         server.enqueue(new MockResponse().setBody(stringWriter.toString()));
+        Log.v(TaskListFragmentTest.class.getSimpleName(), "Enqueued response: " + stringWriter.toString());
     }
 
     private void enqueueResponse(String taskListResponse) throws IOException {
         server.enqueue(new MockResponse().setBody(taskListResponse));
     }
 
+    private TaskListResponse generateTasksList(int assignedCount, int unassignedCount) {
+        TaskListResponse taskListResponse = new TaskListResponse();
+        taskListResponse.assignedTasks = new ArrayList<>();
+        taskListResponse.unassignedTasks = new ArrayList<>();
+
+        for (int i = 0; i < assignedCount; i++) {
+            taskListResponse.assignedTasks.add(new Task("Task " + i));
+        }
+
+        for (int i = assignedCount; i < unassignedCount + assignedCount; i++) {
+            taskListResponse.unassignedTasks.add(new Task("Task " + i));
+        }
+
+        return taskListResponse;
+    }
 }
