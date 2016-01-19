@@ -76,7 +76,7 @@ public class TaskDetailsFragmentTest extends BaseSpicedInjectedFragmentTest {
         Task task = new Task("Task 0");
         StringWriter stringWriter = new StringWriter();
         MAPPER.writeValue(stringWriter, task);
-        server.enqueue(new MockResponse().setBody(stringWriter.toString()).addHeader("Content-Type", "application/json; charset=utf-8"));
+        server.enqueue(new MockResponse().setBody(stringWriter.toString()));
 
         // When
         activityTestRule.getActivity().showTasksDetails(0);

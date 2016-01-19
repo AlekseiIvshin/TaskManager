@@ -139,7 +139,7 @@ public class SignInFragmentTest extends BaseSpicedInjectedFragmentTest {
 
         MAPPER.writeValue(stringWriter, successResponse);
 
-        server.enqueue(new MockResponse().setBody(stringWriter.toString()).addHeader("Content-Type", "application/json; charset=utf-8"));
+        server.enqueue(new MockResponse().setBody(stringWriter.toString()));
 
         // When
         onView(withId(R.id.input_login)).perform(typeText(TEST_LEAD_LOGIN));
