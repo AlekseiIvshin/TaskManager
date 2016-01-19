@@ -17,6 +17,9 @@ import com.alekseiivhsin.taskmanager.network.requests.TaskDetailsRequest;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
+
 import javax.inject.Inject;
 
 import butterknife.Bind;
@@ -65,7 +68,7 @@ public class TaskDetailsFragment extends SpicedFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_task_details, container, false);
         ButterKnife.bind(this, rootView);
-        
+
         if (mAuthHelper.hasAccountRights(UserRights.CAN_UPDATE_TASK)) {
             mEditTask.setVisibility(View.VISIBLE);
         } else {
@@ -88,7 +91,21 @@ public class TaskDetailsFragment extends SpicedFragment {
             @Override
             public void onRequestSuccess(Task task) {
                 mTaskName.setText(task.name);
+                mTaskPriority.setText(getPriorityByCode(task.priority));
+                mTaskStatus.setText(getStatusByCode(task.status));
+                mTaskDeadline.setText(task.deadline.toString(DateTimeFormat.forPattern(getString(R.string.deadline_format))));
+                mTaskDescription.setText(task.description);
             }
         });
+    }
+
+    private String getPriorityByCode(int priorityCode) {
+        String[] prioritiesNames = getResources().getStringArray(R.array.priority_names);
+        return prioritiesNames[priorityCode];
+    }
+
+    private String getStatusByCode(int statusCode) {
+        String[] prioritiesNames = getResources().getStringArray(R.array.status_names);
+        return prioritiesNames[statusCode];
     }
 }

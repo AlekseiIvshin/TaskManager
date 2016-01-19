@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Priority -->
+    <string-array name="priority_names">
+        <item>Low</item>
+        <item>Medium</item>
+        <item>High</item>
+    </string-array>
+    <!-- Status -->
+    <string-array name="status_names">
+        <item>New</item>
+        <item>Open</item>
+        <item>On hold</item>
+        <item>Resolved</item>
+        <item>Invalid</item>
+        <item>Closed</item>
+    </string-array>
+
+</resources>

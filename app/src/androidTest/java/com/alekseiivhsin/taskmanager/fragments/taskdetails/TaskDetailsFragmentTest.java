@@ -8,17 +8,18 @@ import com.alekseiivhsin.taskmanager.R;
 import com.alekseiivhsin.taskmanager.SpicedActivity;
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
 import com.alekseiivhsin.taskmanager.fragments.BaseSpicedInjectedFragmentTest;
+import com.alekseiivhsin.taskmanager.helper.TaskBuilder;
 import com.alekseiivhsin.taskmanager.ioc.AuthModule;
 import com.alekseiivhsin.taskmanager.ioc.Graph;
 import com.alekseiivhsin.taskmanager.ioc.MockedGraph;
 import com.alekseiivhsin.taskmanager.ioc.StubNetworkModule;
 import com.alekseiivhsin.taskmanager.models.Task;
-import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.octo.android.robospice.SpiceManager;
 import com.squareup.okhttp.HttpUrl;
 import com.squareup.okhttp.mockwebserver.MockResponse;
 
+import org.joda.time.DateTime;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -30,6 +31,8 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static android.support.test.espresso.matcher.ViewMatchers.withText;
+import static org.hamcrest.Matchers.allOf;
 import static org.hamcrest.Matchers.not;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
@@ -77,20 +80,62 @@ public class TaskDetailsFragmentTest extends BaseSpicedInjectedFragmentTest {
     @Test
     public void onLoad_shouldLoadData() throws IOException {
         // Given
-        Task task = new Task("Task 0");
+        DateTime stubDeadlineTime = new DateTime();
+        Task task = TaskBuilder.newTask()
+                .setName("Task 0")
+                .setDescription("Description")
+                .setDeadline(stubDeadlineTime)
+                .setStatus(0)
+                .setPriority(0)
+                .build();
+        
         enqueueResponse(task);
 
         // When
         activityTestRule.getActivity().showTasksDetails(0);
 
         // Then
-        onView(withId(R.id.task_name)).check(matches(isDisplayed()));
+
+        // Checks task name
+        onView(withId(R.id.task_name))
+                .check(matches(
+                        allOf(
+                                isDisplayed(),
+                                withText("Task 0"))));
+
+        // Checks task description
+        onView(withId(R.id.task_description))
+                .check(matches(
+                        allOf(
+                                isDisplayed(),
+                                withText("Description"))));
+
+        // Checks task status
+        onView(withId(R.id.task_status))
+                .check(matches(
+                        allOf(
+                                isDisplayed(),
+                                withText("New"))));
+
+        // Checks task priority
+        onView(withId(R.id.task_priority))
+                .check(matches(
+                        allOf(
+                                isDisplayed(),
+                                withText("Low"))));
+
+        // Checks task deadline
+        onView(withId(R.id.task_deadline))
+                .check(matches(
+                        allOf(
+                                isDisplayed(),
+                                withText(stubDeadlineTime.toString("MM/dd/yyyy HH:mm:ss")))));
     }
 
     @Test
     public void onLoad_shouldShowEditWhenLoggedAsLead() throws IOException {
         // Given
-        Task task = new Task("Task 0");
+        Task task = TaskBuilder.newTask().setName("Task 0").build();
         enqueueResponse(task);
 
         when(mockAuthHelper.hasAccountRights(anyInt())).thenReturn(true);
@@ -105,7 +150,7 @@ public class TaskDetailsFragmentTest extends BaseSpicedInjectedFragmentTest {
     @Test
     public void onLoad_shouldHideEditWhenLoggedAsMember() throws IOException {
         // Given
-        Task task = new Task("Task 0");
+        Task task = TaskBuilder.newTask().setName("Task 0").build();
         enqueueResponse(task);
 
         when(mockAuthHelper.hasAccountRights(anyInt())).thenReturn(false);

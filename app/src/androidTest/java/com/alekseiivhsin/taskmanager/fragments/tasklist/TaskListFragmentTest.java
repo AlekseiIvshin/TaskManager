@@ -11,6 +11,7 @@ import com.alekseiivhsin.taskmanager.SpicedActivity;
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
 import com.alekseiivhsin.taskmanager.authentication.UserRights;
 import com.alekseiivhsin.taskmanager.fragments.BaseSpicedInjectedFragmentTest;
+import com.alekseiivhsin.taskmanager.helper.TaskBuilder;
 import com.alekseiivhsin.taskmanager.ioc.AuthModule;
 import com.alekseiivhsin.taskmanager.ioc.Graph;
 import com.alekseiivhsin.taskmanager.ioc.MockedGraph;
@@ -210,21 +211,17 @@ public class TaskListFragmentTest extends BaseSpicedInjectedFragmentTest {
         Log.v(TaskListFragmentTest.class.getSimpleName(), "Enqueued response: " + stringWriter.toString());
     }
 
-    private void enqueueResponse(String taskListResponse) throws IOException {
-        server.enqueue(new MockResponse().setBody(taskListResponse));
-    }
-
     private TaskListResponse generateTasksList(int assignedCount, int unassignedCount) {
         TaskListResponse taskListResponse = new TaskListResponse();
         taskListResponse.assignedTasks = new ArrayList<>();
         taskListResponse.unassignedTasks = new ArrayList<>();
 
         for (int i = 0; i < assignedCount; i++) {
-            taskListResponse.assignedTasks.add(new Task("Task " + i));
+            taskListResponse.assignedTasks.add(TaskBuilder.newTask().setName("Task " + i).build());
         }
 
         for (int i = assignedCount; i < unassignedCount + assignedCount; i++) {
-            taskListResponse.unassignedTasks.add(new Task("Task " + i));
+            taskListResponse.unassignedTasks.add(TaskBuilder.newTask().setName("Task " + i).build());
         }
 
         return taskListResponse;
