@@ -31,6 +31,7 @@ import java.io.StringWriter;
 import java.util.ArrayList;
 
 import static android.support.test.espresso.Espresso.onView;
+import static android.support.test.espresso.assertion.ViewAssertions.doesNotExist;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
@@ -109,23 +110,71 @@ public class TaskListFragmentTest extends BaseSpicedInjectedFragmentTest {
     }
 
     @Test
-    public void onLoad_showAssignedHeaderWhenAssignedTaskListIsNotEmpty(){
-        throw new IllegalStateException("No such implemented!");
+    public void onLoad_showAssignedHeaderWhenAssignedTaskListIsNotEmpty() throws IOException {
+        // Given
+        TaskListResponse taskListResponse = generateTasksList(3, 0);
+
+        enqueueResponse(taskListResponse);
+
+        when(mockAuthHelper.getAuthToken()).thenReturn("STUB_AUTH_TOKEN");
+        when(mockAuthHelper.hasAccountRights(anyInt())).thenReturn(true);
+
+        // When
+        activityTestRule.getActivity().showTasksList();
+
+        // Then
+        onView(withText(R.string.header_tasks_assigned)).check(matches(isDisplayed()));
     }
 
     @Test
-    public void onLoad_hideAssignedHeaderWhenAssignedTaskListIsEmpty(){
-        throw new IllegalStateException("No such implemented!");
+    public void onLoad_hideAssignedHeaderWhenAssignedTaskListIsEmpty() throws IOException {
+        // Given
+        TaskListResponse taskListResponse = generateTasksList(0, 3);
+
+        enqueueResponse(taskListResponse);
+
+        when(mockAuthHelper.getAuthToken()).thenReturn("STUB_AUTH_TOKEN");
+        when(mockAuthHelper.hasAccountRights(anyInt())).thenReturn(true);
+
+        // When
+        activityTestRule.getActivity().showTasksList();
+
+        // Then
+        onView(withText(R.string.header_tasks_assigned)).check(doesNotExist());
     }
 
     @Test
-    public void onLoad_showUnassignedHeaderWhenAssignedTaskListIsNotEmpty(){
-        throw new IllegalStateException("No such implemented!");
+    public void onLoad_showUnassignedHeaderWhenAssignedTaskListIsNotEmpty() throws IOException {
+        // Given
+        TaskListResponse taskListResponse = generateTasksList(0, 3);
+
+        enqueueResponse(taskListResponse);
+
+        when(mockAuthHelper.getAuthToken()).thenReturn("STUB_AUTH_TOKEN");
+        when(mockAuthHelper.hasAccountRights(anyInt())).thenReturn(true);
+
+        // When
+        activityTestRule.getActivity().showTasksList();
+
+        // Then
+        onView(withText(R.string.header_tasks_unassigned)).check(matches(isDisplayed()));
     }
 
     @Test
-    public void onLoad_hideUnassignedHeaderWhenAssignedTaskListIsEmpty(){
-        throw new IllegalStateException("No such implemented!");
+    public void onLoad_hideUnassignedHeaderWhenAssignedTaskListIsEmpty() throws IOException {
+        // Given
+        TaskListResponse taskListResponse = generateTasksList(3, 0);
+
+        enqueueResponse(taskListResponse);
+
+        when(mockAuthHelper.getAuthToken()).thenReturn("STUB_AUTH_TOKEN");
+        when(mockAuthHelper.hasAccountRights(anyInt())).thenReturn(true);
+
+        // When
+        activityTestRule.getActivity().showTasksList();
+
+        // Then
+        onView(withText(R.string.header_tasks_unassigned)).check(doesNotExist());
     }
 
     @Override

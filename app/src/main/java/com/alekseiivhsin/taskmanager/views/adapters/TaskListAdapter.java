@@ -118,7 +118,7 @@ public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
         if (isUnassignedTaskListEmpty()) {
             return false;
         }
-        return getUnassignedTaskListPartSize() < pos && pos < getAssignedTaskListPartSize() + getUnassignedTaskListPartSize();
+        return getAssignedTaskListPartSize() < pos && pos < getAssignedTaskListPartSize() + getUnassignedTaskListPartSize();
     }
 
     private int getAssignedTaskListPartSize() {
