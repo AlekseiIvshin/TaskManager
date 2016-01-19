@@ -13,6 +13,7 @@ import com.alekseiivhsin.taskmanager.ioc.Graph;
 import com.alekseiivhsin.taskmanager.ioc.MockedGraph;
 import com.alekseiivhsin.taskmanager.ioc.StubNetworkModule;
 import com.alekseiivhsin.taskmanager.models.Task;
+import com.fasterxml.jackson.core.JsonGenerationException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.octo.android.robospice.SpiceManager;
 import com.squareup.okhttp.HttpUrl;
@@ -29,6 +30,9 @@ import static android.support.test.espresso.Espresso.onView;
 import static android.support.test.espresso.assertion.ViewAssertions.matches;
 import static android.support.test.espresso.matcher.ViewMatchers.isDisplayed;
 import static android.support.test.espresso.matcher.ViewMatchers.withId;
+import static org.hamcrest.Matchers.not;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
@@ -74,14 +78,48 @@ public class TaskDetailsFragmentTest extends BaseSpicedInjectedFragmentTest {
     public void onLoad_shouldLoadData() throws IOException {
         // Given
         Task task = new Task("Task 0");
-        StringWriter stringWriter = new StringWriter();
-        MAPPER.writeValue(stringWriter, task);
-        server.enqueue(new MockResponse().setBody(stringWriter.toString()));
+        enqueueResponse(task);
 
         // When
         activityTestRule.getActivity().showTasksDetails(0);
 
         // Then
         onView(withId(R.id.task_name)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void onLoad_shouldShowEditWhenLoggedAsLead() throws IOException {
+        // Given
+        Task task = new Task("Task 0");
+        enqueueResponse(task);
+
+        when(mockAuthHelper.hasAccountRights(anyInt())).thenReturn(true);
+
+        // When
+        activityTestRule.getActivity().showTasksDetails(0);
+
+        // Then
+        onView(withId(R.id.edit_task)).check(matches(isDisplayed()));
+    }
+
+    @Test
+    public void onLoad_shouldHideEditWhenLoggedAsMember() throws IOException {
+        // Given
+        Task task = new Task("Task 0");
+        enqueueResponse(task);
+
+        when(mockAuthHelper.hasAccountRights(anyInt())).thenReturn(false);
+
+        // When
+        activityTestRule.getActivity().showTasksDetails(0);
+
+        // Then
+        onView(withId(R.id.edit_task)).check(matches(not(isDisplayed())));
+    }
+
+    private void enqueueResponse(Task task) throws IOException {
+        StringWriter stringWriter = new StringWriter();
+        MAPPER.writeValue(stringWriter, task);
+        server.enqueue(new MockResponse().setBody(stringWriter.toString()));
     }
 }

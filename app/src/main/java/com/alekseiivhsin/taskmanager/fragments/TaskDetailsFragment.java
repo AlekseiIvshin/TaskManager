@@ -2,6 +2,7 @@ package com.alekseiivhsin.taskmanager.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +11,7 @@ import android.widget.TextView;
 import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.R;
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
+import com.alekseiivhsin.taskmanager.authentication.UserRights;
 import com.alekseiivhsin.taskmanager.models.Task;
 import com.alekseiivhsin.taskmanager.network.requests.TaskDetailsRequest;
 import com.octo.android.robospice.persistence.exception.SpiceException;
@@ -38,6 +40,9 @@ public class TaskDetailsFragment extends SpicedFragment {
     @Bind(R.id.task_status)
     TextView mTaskStatus;
 
+    @Bind(R.id.edit_task)
+    FloatingActionButton mEditTask;
+
     @Inject
     AuthHelper mAuthHelper;
 
@@ -60,6 +65,13 @@ public class TaskDetailsFragment extends SpicedFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_task_details, container, false);
         ButterKnife.bind(this, rootView);
+        
+        if (mAuthHelper.hasAccountRights(UserRights.CAN_UPDATE_TASK)) {
+            mEditTask.setVisibility(View.VISIBLE);
+        } else {
+            mEditTask.setVisibility(View.GONE);
+        }
+
         return rootView;
     }
 
