@@ -88,7 +88,7 @@ public class TaskDetailsFragmentTest extends BaseSpicedInjectedFragmentTest {
                 .setStatus(0)
                 .setPriority(0)
                 .build();
-        
+
         enqueueResponse(task);
 
         // When
@@ -129,7 +129,7 @@ public class TaskDetailsFragmentTest extends BaseSpicedInjectedFragmentTest {
                 .check(matches(
                         allOf(
                                 isDisplayed(),
-                                withText(stubDeadlineTime.toString("MM/dd/yyyy HH:mm:ss")))));
+                                withText(stubDeadlineTime.toString("dd/MM/yyyy HH:mm")))));
     }
 
     @Test
