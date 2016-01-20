@@ -4,7 +4,7 @@
         android:title="@string/drawer.task.list.pool"/>
     <item android:id="@+id/task_list_user"
         android:title="@string/drawer.task.list.user"/>
-    <item android:id="@+id/pool"
+    <item android:id="@+id/pool_members"
         android:title="@string/drawer.pool.list"/>
     <item android:id="@+id/logout"
         android:title="@string/drawer.logout"/>

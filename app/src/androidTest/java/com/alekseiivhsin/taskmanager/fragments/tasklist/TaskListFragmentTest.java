@@ -17,7 +17,7 @@ import com.alekseiivhsin.taskmanager.ioc.Graph;
 import com.alekseiivhsin.taskmanager.ioc.MockedGraph;
 import com.alekseiivhsin.taskmanager.ioc.StubNetworkModule;
 import com.alekseiivhsin.taskmanager.models.Task;
-import com.alekseiivhsin.taskmanager.network.responses.TaskListResponse;
+import com.alekseiivhsin.taskmanager.network.responses.PoolTaskListResponse;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.octo.android.robospice.SpiceManager;
 import com.squareup.okhttp.HttpUrl;
@@ -59,9 +59,9 @@ public class TaskListFragmentTest extends BaseSpicedInjectedFragmentTest {
     @Test
     public void onLoad_shouldLoadTaskList() throws IOException {
         // Given
-        TaskListResponse taskListResponse = generateTasksList(3, 3);
+        PoolTaskListResponse poolTaskListResponse = generateTasksList(3, 3);
 
-        enqueueResponse(taskListResponse);
+        enqueueResponse(poolTaskListResponse);
 
         when(mockAuthHelper.getAuthToken()).thenReturn("STUB_AUTH_TOKEN");
         when(mockAuthHelper.hasAccountRights(anyInt())).thenReturn(true);
@@ -71,11 +71,11 @@ public class TaskListFragmentTest extends BaseSpicedInjectedFragmentTest {
 
         // Then
         onView(withId(R.id.fragment_container)).check(matches(isDisplayed()));
-        for (Task task : taskListResponse.assignedTasks) {
+        for (Task task : poolTaskListResponse.assignedTasks) {
             onView(withText(task.name)).check(matches(isDisplayed()));
         }
 
-        for (Task task : taskListResponse.unassignedTasks) {
+        for (Task task : poolTaskListResponse.unassignedTasks) {
             onView(withText(task.name)).check(matches(isDisplayed()));
         }
     }
@@ -113,9 +113,9 @@ public class TaskListFragmentTest extends BaseSpicedInjectedFragmentTest {
     @Test
     public void onLoad_showAssignedHeaderWhenAssignedTaskListIsNotEmpty() throws IOException {
         // Given
-        TaskListResponse taskListResponse = generateTasksList(3, 0);
+        PoolTaskListResponse poolTaskListResponse = generateTasksList(3, 0);
 
-        enqueueResponse(taskListResponse);
+        enqueueResponse(poolTaskListResponse);
 
         when(mockAuthHelper.getAuthToken()).thenReturn("STUB_AUTH_TOKEN");
         when(mockAuthHelper.hasAccountRights(anyInt())).thenReturn(true);
@@ -130,9 +130,9 @@ public class TaskListFragmentTest extends BaseSpicedInjectedFragmentTest {
     @Test
     public void onLoad_hideAssignedHeaderWhenAssignedTaskListIsEmpty() throws IOException {
         // Given
-        TaskListResponse taskListResponse = generateTasksList(0, 3);
+        PoolTaskListResponse poolTaskListResponse = generateTasksList(0, 3);
 
-        enqueueResponse(taskListResponse);
+        enqueueResponse(poolTaskListResponse);
 
         when(mockAuthHelper.getAuthToken()).thenReturn("STUB_AUTH_TOKEN");
         when(mockAuthHelper.hasAccountRights(anyInt())).thenReturn(true);
@@ -147,9 +147,9 @@ public class TaskListFragmentTest extends BaseSpicedInjectedFragmentTest {
     @Test
     public void onLoad_showUnassignedHeaderWhenAssignedTaskListIsNotEmpty() throws IOException {
         // Given
-        TaskListResponse taskListResponse = generateTasksList(0, 3);
+        PoolTaskListResponse poolTaskListResponse = generateTasksList(0, 3);
 
-        enqueueResponse(taskListResponse);
+        enqueueResponse(poolTaskListResponse);
 
         when(mockAuthHelper.getAuthToken()).thenReturn("STUB_AUTH_TOKEN");
         when(mockAuthHelper.hasAccountRights(anyInt())).thenReturn(true);
@@ -164,9 +164,9 @@ public class TaskListFragmentTest extends BaseSpicedInjectedFragmentTest {
     @Test
     public void onLoad_hideUnassignedHeaderWhenAssignedTaskListIsEmpty() throws IOException {
         // Given
-        TaskListResponse taskListResponse = generateTasksList(3, 0);
+        PoolTaskListResponse poolTaskListResponse = generateTasksList(3, 0);
 
-        enqueueResponse(taskListResponse);
+        enqueueResponse(poolTaskListResponse);
 
         when(mockAuthHelper.getAuthToken()).thenReturn("STUB_AUTH_TOKEN");
         when(mockAuthHelper.hasAccountRights(anyInt())).thenReturn(true);
@@ -202,28 +202,28 @@ public class TaskListFragmentTest extends BaseSpicedInjectedFragmentTest {
                 .setObjectGraph(mockedGraph);
     }
 
-    private void enqueueResponse(TaskListResponse taskListResponse) throws IOException {
+    private void enqueueResponse(PoolTaskListResponse poolTaskListResponse) throws IOException {
         StringWriter stringWriter = new StringWriter();
 
-        MAPPER.writeValue(stringWriter, taskListResponse);
+        MAPPER.writeValue(stringWriter, poolTaskListResponse);
 
         server.enqueue(new MockResponse().setBody(stringWriter.toString()));
         Log.v(TaskListFragmentTest.class.getSimpleName(), "Enqueued response: " + stringWriter.toString());
     }
 
-    private TaskListResponse generateTasksList(int assignedCount, int unassignedCount) {
-        TaskListResponse taskListResponse = new TaskListResponse();
-        taskListResponse.assignedTasks = new ArrayList<>();
-        taskListResponse.unassignedTasks = new ArrayList<>();
+    private PoolTaskListResponse generateTasksList(int assignedCount, int unassignedCount) {
+        PoolTaskListResponse poolTaskListResponse = new PoolTaskListResponse();
+        poolTaskListResponse.assignedTasks = new ArrayList<>();
+        poolTaskListResponse.unassignedTasks = new ArrayList<>();
 
         for (int i = 0; i < assignedCount; i++) {
-            taskListResponse.assignedTasks.add(TaskBuilder.newTask().setName("Task " + i).build());
+            poolTaskListResponse.assignedTasks.add(TaskBuilder.newTask().setName("Task " + i).build());
         }
 
         for (int i = assignedCount; i < unassignedCount + assignedCount; i++) {
-            taskListResponse.unassignedTasks.add(TaskBuilder.newTask().setName("Task " + i).build());
+            poolTaskListResponse.unassignedTasks.add(TaskBuilder.newTask().setName("Task " + i).build());
         }
 
-        return taskListResponse;
+        return poolTaskListResponse;
     }
 }

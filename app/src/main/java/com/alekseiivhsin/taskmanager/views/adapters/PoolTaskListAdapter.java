@@ -16,14 +16,14 @@ import java.util.List;
 /**
  * Created on 14/12/2015.
  */
-public class TaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class PoolTaskListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private static final int ASSIGNED_HEADER = 0;
     private static final int ASSIGNED_TASK = 1;
 
     private static final int UNASSIGNED_HEADER = 2;
     private static final int UNASSIGNED_TASK = 3;
-    private static final String TAG = TaskListAdapter.class.getSimpleName();
+    private static final String TAG = PoolTaskListAdapter.class.getSimpleName();
 
     private List<Task> mAssignedTaskList;
     private List<Task> mUnassignedTaskList;

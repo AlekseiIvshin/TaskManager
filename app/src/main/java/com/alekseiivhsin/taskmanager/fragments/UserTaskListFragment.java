@@ -14,9 +14,9 @@ import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.R;
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
 import com.alekseiivhsin.taskmanager.authentication.UserRights;
-import com.alekseiivhsin.taskmanager.network.requests.TaskListRequest;
-import com.alekseiivhsin.taskmanager.network.responses.TaskListResponse;
-import com.alekseiivhsin.taskmanager.views.adapters.TaskListAdapter;
+import com.alekseiivhsin.taskmanager.network.requests.UserTaskListRequest;
+import com.alekseiivhsin.taskmanager.network.responses.UserTaskListResponse;
+import com.alekseiivhsin.taskmanager.views.adapters.UserTaskListAdapter;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 
@@ -27,9 +27,10 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class TaskListFragment extends SpicedFragment {
+public class UserTaskListFragment extends SpicedFragment {
 
-    private static final String TAG = TaskListFragment.class.getSimpleName();
+    private static final String TAG = UserTaskListFragment.class.getSimpleName();
+
 
     @Bind(R.id.list_tasks)
     RecyclerView mTasksList;
@@ -37,7 +38,7 @@ public class TaskListFragment extends SpicedFragment {
     @Bind(R.id.add_new_task)
     FloatingActionButton mAddNewTask;
 
-    TaskListAdapter mTaskListAdapter;
+    UserTaskListAdapter mPoolTaskListAdapter;
 
     @Inject
     AuthHelper mAuthHelper;
@@ -51,14 +52,14 @@ public class TaskListFragment extends SpicedFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_task_list, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_user_task_list, container, false);
         ButterKnife.bind(this, rootView);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
 
-        mTaskListAdapter = new TaskListAdapter();
+        mPoolTaskListAdapter = new UserTaskListAdapter();
         mTasksList.setLayoutManager(layoutManager);
-        mTasksList.setAdapter(mTaskListAdapter);
+        mTasksList.setAdapter(mPoolTaskListAdapter);
 
         if (!isNeedShowNewTaskButton()) {
             mAddNewTask.setVisibility(View.GONE);
@@ -71,17 +72,17 @@ public class TaskListFragment extends SpicedFragment {
     public void onStart() {
         super.onStart();
 
-        TaskListRequest request = new TaskListRequest(mAuthHelper.getAuthToken());
-        spiceManager.execute(request, new RequestListener<TaskListResponse>() {
+        UserTaskListRequest request = new UserTaskListRequest(mAuthHelper.getAuthToken());
+        spiceManager.execute(request, new RequestListener<UserTaskListResponse>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 Log.v(TAG, "Error while load tasks ", spiceException);
-                mTaskListAdapter.setTaskList(Collections.EMPTY_LIST, Collections.EMPTY_LIST);
+                mPoolTaskListAdapter.setTaskList(Collections.EMPTY_LIST);
             }
 
             @Override
-            public void onRequestSuccess(TaskListResponse taskListResponse) {
-                mTaskListAdapter.setTaskList(taskListResponse.assignedTasks, taskListResponse.unassignedTasks);
+            public void onRequestSuccess(UserTaskListResponse poolTaskListResponse) {
+                mPoolTaskListAdapter.setTaskList(poolTaskListResponse.tasks);
             }
         });
 
