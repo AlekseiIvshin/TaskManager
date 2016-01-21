@@ -1,7 +1,6 @@
 package com.alekseiivhsin.taskmanager.fragments;
 
 import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -17,12 +16,15 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.R;
-import com.alekseiivhsin.taskmanager.authentication.UserRights;
+import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
 import com.alekseiivhsin.taskmanager.network.requests.SignInRequest;
 import com.alekseiivhsin.taskmanager.network.responses.SignInResponse;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
+
+import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -32,8 +34,6 @@ public class SignInFragment extends SpicedFragment {
 
     public static final String EXTRA_IS_ADDING_NEW_ACCOUNT = "EXTRA_IS_ADDING_NEW_ACCOUNT";
     private static final String TAG = SignInFragment.class.getSimpleName();
-
-    private AccountManager mAccountManager;
 
     @Bind(R.id.input_login)
     EditText mLogin;
@@ -53,8 +53,8 @@ public class SignInFragment extends SpicedFragment {
     @Bind(R.id.error_message)
     TextView mErrorMessages;
 
-    private String mAuthTokenType;
-    private String mAccountType;
+    @Inject
+    AuthHelper mAuthHelper;
 
     private SignInCallbacks mCallbacks;
 
@@ -83,9 +83,7 @@ public class SignInFragment extends SpicedFragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAccountManager = AccountManager.get(getActivity());
-        mAuthTokenType = getString(R.string.authTokenType);
-        mAccountType = getString(R.string.accountType);
+        App.getObjectGraphInstance().inject(this);
     }
 
     @Nullable
@@ -108,7 +106,7 @@ public class SignInFragment extends SpicedFragment {
         if (isUserNameValid && isPasswordValid) {
             onRequestStarted();
 
-            SignInRequest request = new SignInRequest(userName, password, mAccountType);
+            SignInRequest request = new SignInRequest(userName, password, mAuthHelper.accountType);
 
             spiceManager.execute(request, new RequestListener<SignInResponse>() {
                 @Override
@@ -182,17 +180,11 @@ public class SignInFragment extends SpicedFragment {
         String accountName = mLogin.getText().toString();
         String password = mLogin.getText().toString();
 
-        final Account account = new Account(accountName, mAccountType);
-        if (getArguments() != null && getArguments().getBoolean(EXTRA_IS_ADDING_NEW_ACCOUNT, false)) {
-            String authToken = signInResponse.authToken;
-
-            Bundle userData = new Bundle();
-            userData.putString(UserRights.USER_RIGHTS, String.valueOf(signInResponse.userRights));
-            userData.putString(AccountManager.KEY_AUTHTOKEN, authToken);
-            mAccountManager.addAccountExplicitly(account, password, userData);
-            mAccountManager.setAuthToken(account, mAuthTokenType, authToken);
+        final Account account = mAuthHelper.createNewAccount(accountName);
+        if (isAddingNewAccount()) {
+            mAuthHelper.addAccount(account, password, signInResponse.authToken, signInResponse.userRights);
         } else {
-            mAccountManager.setPassword(account, password);
+            mAuthHelper.setPassword(account, password);
         }
 
         unlockInputFields();
@@ -206,5 +198,9 @@ public class SignInFragment extends SpicedFragment {
 
     public interface SignInCallbacks {
         void onSignedIn(int result);
+    }
+
+    private boolean isAddingNewAccount(){
+        return getArguments() != null && getArguments().getBoolean(EXTRA_IS_ADDING_NEW_ACCOUNT, false);
     }
 }

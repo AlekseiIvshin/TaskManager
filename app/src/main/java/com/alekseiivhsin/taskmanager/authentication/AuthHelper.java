@@ -19,8 +19,8 @@ public class AuthHelper {
 
     private final AccountManager mAccountManager;
 
-    private final String accountType;
-    private final String authTokenType;
+    public final String accountType;
+    public final String authTokenType;
 
 
     public static AuthHelper get(Context context) {
@@ -33,23 +33,24 @@ public class AuthHelper {
         authTokenType = context.getString(R.string.authTokenType);
     }
 
-    public Account[] getAccounts() {
+    private Account[] getAccounts() {
         return mAccountManager.getAccountsByType(accountType);
     }
 
-    @Deprecated
-    public void addAccountExplicitly(String login, String password, int userRights, String authToken, String authTokenType) {
-        final Account account = new Account(login, accountType);
+    public void addAccount(Account account, String password, String authToken, int userRights) {
         Bundle userData = new Bundle();
-        userData.putString(USER_RIGHTS, String.valueOf(userRights));
+        userData.putString(UserRights.USER_RIGHTS, String.valueOf(userRights));
         userData.putString(AccountManager.KEY_AUTHTOKEN, authToken);
         mAccountManager.addAccountExplicitly(account, password, userData);
         mAccountManager.setAuthToken(account, authTokenType, authToken);
     }
 
-    @Deprecated
-    public void addAccount(Activity activity) {
-        mAccountManager.addAccount(accountType, authTokenType, null, null, activity, null, null);
+    public void setPassword(Account account, String password) {
+        mAccountManager.setPassword(account, password);
+    }
+
+    public Account createNewAccount(String accountName) {
+        return new Account(accountName, accountType);
     }
 
     public int getUserRights(Account account) {
@@ -59,11 +60,6 @@ public class AuthHelper {
         }
 
         return Integer.parseInt(stringRights);
-    }
-
-    public boolean hasAccountRights(Account account, int rightsMask) {
-        int accountRight = getUserRights(account);
-        return (accountRight & rightsMask) != UserRights.NONE;
     }
 
     public boolean hasAccountRights(int rightsMask) {
