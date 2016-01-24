@@ -1,4 +1,4 @@
-package com.alekseiivhsin.taskmanager.fragments;
+package com.alekseiivhsin.taskmanager.functional.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -18,7 +18,6 @@ import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 
 import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 
 import javax.inject.Inject;
 

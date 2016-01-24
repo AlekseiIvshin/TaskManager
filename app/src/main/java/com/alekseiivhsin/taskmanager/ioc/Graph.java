@@ -4,10 +4,11 @@ import android.app.Application;
 
 import com.alekseiivhsin.taskmanager.SpicedActivity;
 import com.alekseiivhsin.taskmanager.authentication.AuthTokenLoader;
-import com.alekseiivhsin.taskmanager.fragments.PoolTaskListFragment;
-import com.alekseiivhsin.taskmanager.fragments.SpicedFragment;
-import com.alekseiivhsin.taskmanager.fragments.TaskDetailsFragment;
-import com.alekseiivhsin.taskmanager.network.requests.PoolMemberListRequest;
+import com.alekseiivhsin.taskmanager.functional.fragments.PoolMembersFragment;
+import com.alekseiivhsin.taskmanager.functional.fragments.PoolTaskListFragment;
+import com.alekseiivhsin.taskmanager.functional.fragments.SpicedFragment;
+import com.alekseiivhsin.taskmanager.functional.fragments.TaskDetailsFragment;
+import com.alekseiivhsin.taskmanager.network.requests.PoolMembersRequest;
 import com.alekseiivhsin.taskmanager.network.requests.PoolTaskListRequest;
 import com.alekseiivhsin.taskmanager.network.requests.SignInRequest;
 import com.alekseiivhsin.taskmanager.network.requests.TaskDetailsRequest;
@@ -43,11 +44,13 @@ public interface Graph {
 
     void inject(TaskDetailsFragment taskDetailsFragment);
 
+    void inject(PoolMembersFragment poolMembersFragment);
+
     void inject(SpicedFragment spicedFragment);
 
     void inject(UserTaskListRequest userTaskListRequest);
 
-    void inject(PoolMemberListRequest poolMemberListRequest);
+    void inject(PoolMembersRequest poolMembersRequest);
 
     final class Initializer {
         public static Graph init(Application app) {

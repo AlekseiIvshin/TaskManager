@@ -10,7 +10,7 @@ import java.util.List;
  * Created on 21/12/2015.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class PoolMemberListResponse {
+public class PoolMembersResponse {
 
     @JsonProperty("tasks")
     public List<PoolMember> poolMemberList;

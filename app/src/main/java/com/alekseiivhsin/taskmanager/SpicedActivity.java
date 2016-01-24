@@ -14,11 +14,11 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
-import com.alekseiivhsin.taskmanager.fragments.PoolMembersListFragment;
-import com.alekseiivhsin.taskmanager.fragments.PoolTaskListFragment;
-import com.alekseiivhsin.taskmanager.fragments.SignInFragment;
-import com.alekseiivhsin.taskmanager.fragments.TaskDetailsFragment;
-import com.alekseiivhsin.taskmanager.fragments.UserTaskListFragment;
+import com.alekseiivhsin.taskmanager.functional.fragments.PoolMembersFragment;
+import com.alekseiivhsin.taskmanager.functional.fragments.PoolTaskListFragment;
+import com.alekseiivhsin.taskmanager.functional.fragments.SignInFragment;
+import com.alekseiivhsin.taskmanager.functional.fragments.TaskDetailsFragment;
+import com.alekseiivhsin.taskmanager.functional.fragments.UserTaskListFragment;
 import com.octo.android.robospice.SpiceManager;
 
 import javax.inject.Inject;
@@ -46,21 +46,6 @@ public class SpicedActivity extends AppCompatActivity implements NavigationView.
     @Inject
     public SpiceManager spiceManager;
 
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        spiceManager.start(this);
-    }
-
-    @Override
-    public void onStop() {
-        if (spiceManager.isStarted()) {
-            spiceManager.shouldStop();
-        }
-        super.onStop();
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,6 +68,20 @@ public class SpicedActivity extends AppCompatActivity implements NavigationView.
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        spiceManager.start(this);
+    }
+
+    @Override
+    public void onStop() {
+        if (spiceManager.isStarted()) {
+            spiceManager.shouldStop();
+        }
+        super.onStop();
+    }
+
+    @Override
     protected void onDestroy() {
         mDrawerLayout.setDrawerListener(null);
         super.onDestroy();
@@ -98,7 +97,7 @@ public class SpicedActivity extends AppCompatActivity implements NavigationView.
                 replaceFragment(new UserTaskListFragment(), TAG_USER_TASK_LIST);
                 return true;
             case R.id.pool_members:
-                replaceFragment(new PoolMembersListFragment(), TAG_POOL_MEMBERS);
+                replaceFragment(new PoolMembersFragment(), TAG_POOL_MEMBERS);
             case R.id.logout:
                 showSignIn();
                 mDrawerLayout.closeDrawers();
@@ -133,7 +132,7 @@ public class SpicedActivity extends AppCompatActivity implements NavigationView.
                 .commit();
     }
 
-    private void replaceFragment(Fragment fragment, String tag) {
+    public void replaceFragment(Fragment fragment, String tag) {
         getSupportFragmentManager()
                 .beginTransaction()
                 .replace(R.id.fragment_container, fragment, tag)

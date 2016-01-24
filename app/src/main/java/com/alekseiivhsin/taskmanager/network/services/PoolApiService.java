@@ -1,6 +1,6 @@
 package com.alekseiivhsin.taskmanager.network.services;
 
-import com.alekseiivhsin.taskmanager.network.responses.PoolMemberListResponse;
+import com.alekseiivhsin.taskmanager.network.responses.PoolMembersResponse;
 
 import retrofit.Call;
 import retrofit.http.GET;
@@ -12,6 +12,6 @@ import retrofit.http.Query;
 public interface PoolApiService {
 
     @GET("/api/pool/member")
-    Call<PoolMemberListResponse> getPoolMemberList(@Query("authToken") String authToken);
+    Call<PoolMembersResponse> getPoolMemberList(@Query("authToken") String authToken);
 
 }

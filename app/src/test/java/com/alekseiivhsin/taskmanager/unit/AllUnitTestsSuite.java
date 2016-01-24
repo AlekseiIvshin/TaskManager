@@ -1,5 +1,7 @@
 package com.alekseiivhsin.taskmanager.unit;
 
+import com.alekseiivhsin.taskmanager.functional.fragments.PoolMembersFragmentTest;
+
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
@@ -8,7 +10,7 @@ import org.junit.runners.Suite;
  * on 21.01.2016.
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({})
+@Suite.SuiteClasses({PoolMembersFragmentTest.class})
 public class AllUnitTestsSuite {
 }
 

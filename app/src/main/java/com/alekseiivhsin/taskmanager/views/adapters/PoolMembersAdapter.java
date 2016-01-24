@@ -15,13 +15,12 @@ import java.util.List;
 /**
  * Created on 14/12/2015.
  */
-public class PoolMemberListAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
+public class PoolMembersAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private List<PoolMember> mPoolMemberList;
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
         return new PoolMemberListItemViewHolder(
                 LayoutInflater
                         .from(parent.getContext()).inflate(R.layout.listitem_pool_member, parent, false));
@@ -29,9 +28,7 @@ public class PoolMemberListAdapter extends RecyclerView.Adapter<RecyclerView.Vie
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-
         ((PoolMemberListItemViewHolder) holder).setContent(mPoolMemberList.get(position));
-
     }
 
     @Override

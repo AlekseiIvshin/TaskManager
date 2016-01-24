@@ -1,4 +1,4 @@
-package com.alekseiivhsin.taskmanager.fragments;
+package com.alekseiivhsin.taskmanager.functional.fragments;
 
 
 import android.os.Bundle;
@@ -13,9 +13,9 @@ import android.view.ViewGroup;
 import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.R;
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
-import com.alekseiivhsin.taskmanager.network.requests.PoolMemberListRequest;
-import com.alekseiivhsin.taskmanager.network.responses.PoolMemberListResponse;
-import com.alekseiivhsin.taskmanager.views.adapters.PoolMemberListAdapter;
+import com.alekseiivhsin.taskmanager.network.requests.PoolMembersRequest;
+import com.alekseiivhsin.taskmanager.network.responses.PoolMembersResponse;
+import com.alekseiivhsin.taskmanager.views.adapters.PoolMembersAdapter;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 
@@ -26,14 +26,14 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class PoolMembersListFragment extends SpicedFragment {
+public class PoolMembersFragment extends SpicedFragment {
 
-    private static final String TAG = PoolMembersListFragment.class.getSimpleName();
+    private static final String TAG = PoolMembersFragment.class.getSimpleName();
 
     @Bind(R.id.list_pool)
     RecyclerView mPoolMembersList;
 
-    PoolMemberListAdapter mPoolMemberListAdapter;
+    PoolMembersAdapter mPoolMembersAdapter;
 
     @Inject
     AuthHelper mAuthHelper;
@@ -41,7 +41,8 @@ public class PoolMembersListFragment extends SpicedFragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        App.getObjectGraphInstance().inject(this);
+
+        ((App) getActivity().getApplication()).getObjectGraph().inject(this);
     }
 
     @Nullable
@@ -52,9 +53,9 @@ public class PoolMembersListFragment extends SpicedFragment {
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
 
-        mPoolMemberListAdapter = new PoolMemberListAdapter();
+        mPoolMembersAdapter = new PoolMembersAdapter();
         mPoolMembersList.setLayoutManager(layoutManager);
-        mPoolMembersList.setAdapter(mPoolMemberListAdapter);
+        mPoolMembersList.setAdapter(mPoolMembersAdapter);
 
         return rootView;
     }
@@ -63,17 +64,17 @@ public class PoolMembersListFragment extends SpicedFragment {
     public void onStart() {
         super.onStart();
 
-        PoolMemberListRequest request = new PoolMemberListRequest(mAuthHelper.getAuthToken());
-        spiceManager.execute(request, new RequestListener<PoolMemberListResponse>() {
+        PoolMembersRequest request = new PoolMembersRequest(mAuthHelper.getAuthToken());
+        spiceManager.execute(request, new RequestListener<PoolMembersResponse>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 Log.v(TAG, "Error while load tasks ", spiceException);
-                mPoolMemberListAdapter.setList(Collections.EMPTY_LIST);
+                mPoolMembersAdapter.setList(Collections.EMPTY_LIST);
             }
 
             @Override
-            public void onRequestSuccess(PoolMemberListResponse poolMemberListResponse) {
-                mPoolMemberListAdapter.setList(poolMemberListResponse.poolMemberList);
+            public void onRequestSuccess(PoolMembersResponse poolMembersResponse) {
+                mPoolMembersAdapter.setList(poolMembersResponse.poolMemberList);
             }
         });
 

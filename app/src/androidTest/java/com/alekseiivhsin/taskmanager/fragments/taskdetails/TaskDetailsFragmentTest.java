@@ -1,4 +1,4 @@
-package com.alekseiivhsin.taskmanager.fragments.taskdetails;
+package com.alekseiivhsin.taskmanager.functional.fragments.taskdetails;
 
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -7,7 +7,7 @@ import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.R;
 import com.alekseiivhsin.taskmanager.SpicedActivity;
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
-import com.alekseiivhsin.taskmanager.fragments.BaseSpicedInjectedFragmentTest;
+import com.alekseiivhsin.taskmanager.functional.fragments.BaseSpicedInjectedFragmentTest;
 import com.alekseiivhsin.taskmanager.helper.TaskBuilder;
 import com.alekseiivhsin.taskmanager.ioc.AuthModule;
 import com.alekseiivhsin.taskmanager.ioc.Graph;
