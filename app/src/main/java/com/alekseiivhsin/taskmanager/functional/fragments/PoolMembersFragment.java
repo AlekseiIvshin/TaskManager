@@ -74,6 +74,7 @@ public class PoolMembersFragment extends SpicedFragment {
 
             @Override
             public void onRequestSuccess(PoolMembersResponse poolMembersResponse) {
+                Log.v(TAG, "Received pool members count = " + poolMembersResponse.poolMemberList.size());
                 mPoolMembersAdapter.setList(poolMembersResponse.poolMemberList);
             }
         });

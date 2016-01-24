@@ -50,9 +50,9 @@ public class ShadowPoolSpiceManager {
 
     private PoolMembersResponse generatePoolMembers(int count) {
         PoolMembersResponse response = new PoolMembersResponse();
-        List<PoolMember> poolMemberList = new ArrayList<>();
+        response.poolMemberList = new ArrayList<>();
         for (int i = 0; i < count; i++) {
-            poolMemberList.add(new PoolMember(i, "Pool", "Member " + i));
+            response.poolMemberList.add(new PoolMember(i, "Pool", "Member " + i));
         }
         return response;
     }

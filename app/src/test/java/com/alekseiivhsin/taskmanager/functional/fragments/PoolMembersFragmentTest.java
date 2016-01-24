@@ -17,6 +17,7 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+import org.robolectric.shadows.ShadowLooper;
 
 import static com.alekseiivhsin.taskmanager.SpicedActivity.TAG_POOL_MEMBERS;
 import static com.alekseiivhsin.taskmanager.functional.fragments.ShadowPoolSpiceManager.POOL_MEMBER_COUNT;
@@ -59,13 +60,14 @@ public class PoolMembersFragmentTest {
 
         // When
         mActivity.replaceFragment(new PoolMembersFragment(), TAG_POOL_MEMBERS);
+        ShadowLooper.runUiThreadTasks();
 
         // Then
         RecyclerView poolList = (RecyclerView) mActivity.findViewById(R.id.list_pool);
         assertNotNull(poolList);
-//        assertTrue(format("Pool list should contains at least %d, but contains %d",
-//                        POOL_MEMBER_COUNT,
-//                        poolList.getChildCount()),
-//                poolList.getChildCount() >= POOL_MEMBER_COUNT);
+        assertTrue(format("Pool list should contains at least %d, but contains %d",
+                        POOL_MEMBER_COUNT,
+                        poolList.getChildCount()),
+                poolList.getChildCount() >= POOL_MEMBER_COUNT);
     }
 }
