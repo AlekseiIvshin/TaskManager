@@ -62,12 +62,20 @@ public class AuthHelper {
         return Integer.parseInt(stringRights);
     }
 
+    public int getUserRights() {
+        String stringRights = mAccountManager.getUserData(getCurrentAccount(), USER_RIGHTS);
+        if (TextUtils.isEmpty(stringRights)) {
+            return UserRights.NONE;
+        }
+
+        return Integer.parseInt(stringRights);
+    }
+
     public boolean hasAccountRights(int rightsMask) {
-        Account currentAccount = getCurrentAccount();
-        if (currentAccount == null) {
+        if (getCurrentAccount() == null) {
             return false;
         }
-        int accountRight = getUserRights(currentAccount);
+        int accountRight = getUserRights();
         return (accountRight & rightsMask) != UserRights.NONE;
     }
 

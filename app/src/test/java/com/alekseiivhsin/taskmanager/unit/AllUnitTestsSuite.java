@@ -8,7 +8,7 @@ import org.junit.runners.Suite;
  * on 21.01.2016.
  */
 @RunWith(Suite.class)
-@Suite.SuiteClasses({ })
+@Suite.SuiteClasses({})
 public class AllUnitTestsSuite {
 }
 

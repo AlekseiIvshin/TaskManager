@@ -1,9 +1,11 @@
 package com.alekseiivhsin.taskmanager.unit;
 
-import android.accounts.AccountManager;
+import android.accounts.Account;
 
 import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.BuildConfig;
+import com.alekseiivhsin.taskmanager.R;
+import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -11,6 +13,11 @@ import org.junit.runner.RunWith;
 import org.robolectric.RobolectricGradleTestRunner;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
+
+import java.util.Random;
+
+import static junit.framework.Assert.assertEquals;
+import static junit.framework.Assert.assertNull;
 
 /**
  * Created by Aleksei Ivshin
@@ -23,15 +30,52 @@ import org.robolectric.annotation.Config;
         constants = BuildConfig.class)
 public class AuthHelperTest {
 
-    AccountManager mAccountManager;
+    private final String STUB_ACCOUNT_NAME = "STUB_ACCOUNT_NAME";
+    private final String STUB_ACCOUNT_PASSWORD = "STUB_ACCOUNT_PASSWORD";
+    private final String STUB_AUTH_TOKEN = "STUB_AUTH_TOKEN";
+
+    AuthHelper authHelper;
 
     @Before
     public void setUp() {
-        mAccountManager = AccountManager.get(RuntimeEnvironment.application);
+        authHelper = AuthHelper.get(RuntimeEnvironment.application);
     }
 
     @Test
-    public void onAddingAccount_shouldSaveDataRight(){
-        throw new IllegalStateException("Not implemented!");
+    public void onGetAccount_shouldReturnNullWhenThereIsNotAccount() {
+        assertNull("Account should be null", authHelper.getCurrentAccount());
+    }
+
+    @Test
+    public void onCreateAccount_shouldSetDefaultValues() {
+        // When
+        Account account = authHelper.createNewAccount(STUB_ACCOUNT_NAME);
+        String accountType = RuntimeEnvironment.application.getResources().getString(R.string.accountType);
+
+        // Then
+        assertEquals("Account name should be equals", STUB_ACCOUNT_NAME, account.name);
+        assertEquals("Account type should be equals", accountType, account.type);
+    }
+
+    @Test
+    public void onAddingAccount_shouldAddCountWithRightData() {
+        // Given
+        assertNull("Account should be null", authHelper.getCurrentAccount());
+        Account addedAccount = authHelper.createNewAccount(STUB_ACCOUNT_NAME);
+        int stubUserRights = generateRandomRights();
+
+        // When
+        authHelper.addAccount(addedAccount, STUB_ACCOUNT_PASSWORD, STUB_AUTH_TOKEN, stubUserRights);
+
+        // Then
+        Account receivedAccount = authHelper.getCurrentAccount();
+        assertEquals(addedAccount.name, receivedAccount.name);
+        assertEquals(addedAccount.type, receivedAccount.type);
+        assertEquals(STUB_AUTH_TOKEN, authHelper.getAuthToken());
+        assertEquals(stubUserRights, authHelper.getUserRights());
+    }
+
+    private int generateRandomRights() {
+        return new Random().nextInt() * 9;
     }
 }

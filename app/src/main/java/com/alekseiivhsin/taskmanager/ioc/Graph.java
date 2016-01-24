@@ -8,9 +8,9 @@ import com.alekseiivhsin.taskmanager.fragments.PoolTaskListFragment;
 import com.alekseiivhsin.taskmanager.fragments.SpicedFragment;
 import com.alekseiivhsin.taskmanager.fragments.TaskDetailsFragment;
 import com.alekseiivhsin.taskmanager.network.requests.PoolMemberListRequest;
+import com.alekseiivhsin.taskmanager.network.requests.PoolTaskListRequest;
 import com.alekseiivhsin.taskmanager.network.requests.SignInRequest;
 import com.alekseiivhsin.taskmanager.network.requests.TaskDetailsRequest;
-import com.alekseiivhsin.taskmanager.network.requests.PoolTaskListRequest;
 import com.alekseiivhsin.taskmanager.network.requests.UserTaskListRequest;
 
 import javax.inject.Singleton;
@@ -25,7 +25,8 @@ import dagger.Component;
         modules = {
                 NetworkModule.class,
                 AuthModule.class,
-                TaskModule.class})
+                TaskModule.class,
+                PoolModule.class})
 public interface Graph {
 
     void inject(AuthTokenLoader authTokenLoader);
@@ -54,6 +55,7 @@ public interface Graph {
                     .authModule(new AuthModule(app))
                     .networkModule(new NetworkModule())
                     .taskModule(new TaskModule())
+                    .poolModule(new PoolModule())
                     .build();
         }
     }
