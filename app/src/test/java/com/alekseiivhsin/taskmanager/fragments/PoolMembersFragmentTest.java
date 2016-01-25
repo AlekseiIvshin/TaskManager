@@ -5,21 +5,22 @@ import android.support.v7.widget.RecyclerView;
 import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.BuildConfig;
 import com.alekseiivhsin.taskmanager.R;
+import com.alekseiivhsin.taskmanager.SpicedActivity;
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
 import com.alekseiivhsin.taskmanager.authentication.UserRights;
 import com.alekseiivhsin.taskmanager.shadows.MyRobolectricRunner;
 import com.alekseiivhsin.taskmanager.shadows.MyShadowAccountManager;
 
-import org.hamcrest.CoreMatchers;
-import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.support.v4.SupportFragmentTestUtil;
 
+import static com.alekseiivhsin.taskmanager.SpicedActivity.TAG_POOL_MEMBERS;
 import static com.alekseiivhsin.taskmanager.fragments.ShadowPoolSpiceManager.POOL_MEMBER_COUNT;
 import static com.alekseiivhsin.taskmanager.shadows.MyShadowAccountManager.STUB_SUCCESS_ACCOUNT_NAME;
 import static com.alekseiivhsin.taskmanager.shadows.MyShadowAccountManager.STUB_SUCCESS_AUTH_TOKEN;
@@ -44,11 +45,12 @@ public class PoolMembersFragmentTest {
 
     AuthHelper mAuthHelper;
 
-    PoolMembersFragment fragment;
+
+    SpicedActivity spicedActivity;
 
     @Before
     public void setUp() {
-        fragment = new PoolMembersFragment();
+        spicedActivity = Robolectric.setupActivity(SpicedActivity.class);
         mAuthHelper = AuthHelper.get(RuntimeEnvironment.application);
     }
 
@@ -59,10 +61,10 @@ public class PoolMembersFragmentTest {
                 STUB_ACCOUNT_PASSWORD, STUB_SUCCESS_AUTH_TOKEN, UserRights.NONE);
 
         // When
-        SupportFragmentTestUtil.startFragment(fragment);
+        spicedActivity.replaceFragment(new PoolMembersFragment(), TAG_POOL_MEMBERS);
 
         // Then
-        RecyclerView poolList = (RecyclerView) fragment.getView().findViewById(R.id.list_pool);
+        RecyclerView poolList = (RecyclerView) spicedActivity.findViewById(R.id.list_pool);
         assertNotNull(poolList);
         Assert.assertThat(poolList.getAdapter().getItemCount(), is(equalTo(POOL_MEMBER_COUNT)));
     }
