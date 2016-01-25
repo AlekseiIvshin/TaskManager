@@ -6,7 +6,7 @@ import android.test.suitebuilder.annotation.LargeTest;
 
 import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.R;
-import com.alekseiivhsin.taskmanager.SpicedActivity;
+import com.alekseiivhsin.taskmanager.MainActivity;
 import com.alekseiivhsin.taskmanager.authentication.UserRights;
 import com.alekseiivhsin.taskmanager.functional.fragments.BaseSpicedInjectedFragmentTest;
 import com.alekseiivhsin.taskmanager.ioc.Graph;
@@ -54,8 +54,8 @@ public class SignInFragmentTest extends BaseSpicedInjectedFragmentTest {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     @Rule
-    public ActivityTestRule<SpicedActivity> activityTestRule
-            = new ActivityTestRule<>(SpicedActivity.class);
+    public ActivityTestRule<MainActivity> activityTestRule
+            = new ActivityTestRule<>(MainActivity.class);
 
     @Before
     public void setUp() {

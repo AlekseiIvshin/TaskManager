@@ -6,8 +6,8 @@ import android.test.suitebuilder.annotation.LargeTest;
 import android.util.Log;
 
 import com.alekseiivhsin.taskmanager.App;
+import com.alekseiivhsin.taskmanager.MainActivity;
 import com.alekseiivhsin.taskmanager.R;
-import com.alekseiivhsin.taskmanager.SpicedActivity;
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
 import com.alekseiivhsin.taskmanager.authentication.UserRights;
 import com.alekseiivhsin.taskmanager.functional.fragments.BaseSpicedInjectedFragmentTest;
@@ -50,7 +50,7 @@ import static org.mockito.Mockito.when;
 public class TaskListFragmentTest extends BaseSpicedInjectedFragmentTest {
 
     @Rule
-    public ActivityTestRule<SpicedActivity> activityTestRule = new ActivityTestRule<>(SpicedActivity.class);
+    public ActivityTestRule<MainActivity> activityTestRule = new ActivityTestRule<>(MainActivity.class);
 
     private static final ObjectMapper MAPPER = new ObjectMapper();
 

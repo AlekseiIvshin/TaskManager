@@ -4,8 +4,8 @@ import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
 
 import com.alekseiivhsin.taskmanager.App;
+import com.alekseiivhsin.taskmanager.MainActivity;
 import com.alekseiivhsin.taskmanager.R;
-import com.alekseiivhsin.taskmanager.SpicedActivity;
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
 import com.alekseiivhsin.taskmanager.functional.fragments.BaseSpicedInjectedFragmentTest;
 import com.alekseiivhsin.taskmanager.helper.TaskBuilder;
@@ -50,8 +50,8 @@ public class TaskDetailsFragmentTest extends BaseSpicedInjectedFragmentTest {
     static AuthHelper mockAuthHelper;
 
     @Rule
-    public ActivityTestRule<SpicedActivity> activityTestRule
-            = new ActivityTestRule<>(SpicedActivity.class);
+    public ActivityTestRule<MainActivity> activityTestRule
+            = new ActivityTestRule<>(MainActivity.class);
 
     @Override
     protected SpiceManager getSpiceManager() {

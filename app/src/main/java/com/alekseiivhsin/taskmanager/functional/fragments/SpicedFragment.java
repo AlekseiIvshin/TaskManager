@@ -1,29 +1,31 @@
 package com.alekseiivhsin.taskmanager.functional.fragments;
 
-import android.content.Context;
 import android.support.v4.app.Fragment;
 
-import com.alekseiivhsin.taskmanager.SpicedActivity;
 import com.octo.android.robospice.SpiceManager;
+
+import javax.inject.Inject;
 
 /**
  * Created on 22/12/2015.
  */
 public class SpicedFragment extends Fragment {
 
-    protected SpiceManager spiceManager;
+    @Inject
+    public SpiceManager spiceManager;
 
     @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if(context instanceof SpicedActivity) {
-            spiceManager = ((SpicedActivity) context).spiceManager;
+    public void onStart() {
+        super.onStart();
+        spiceManager.start(getActivity());
+    }
+
+    @Override
+    public void onStop() {
+        if (spiceManager.isStarted()) {
+            spiceManager.shouldStop();
         }
+        super.onStop();
     }
 
-    @Override
-    public void onDetach() {
-        spiceManager = null;
-        super.onDetach();
-    }
 }

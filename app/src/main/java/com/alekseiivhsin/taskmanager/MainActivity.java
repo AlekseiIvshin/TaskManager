@@ -19,14 +19,13 @@ import com.alekseiivhsin.taskmanager.functional.fragments.PoolTaskListFragment;
 import com.alekseiivhsin.taskmanager.functional.fragments.SignInFragment;
 import com.alekseiivhsin.taskmanager.functional.fragments.TaskDetailsFragment;
 import com.alekseiivhsin.taskmanager.functional.fragments.UserTaskListFragment;
-import com.octo.android.robospice.SpiceManager;
 
 import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class SpicedActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SignInFragment.SignInCallbacks {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, SignInFragment.SignInCallbacks {
     public static final String TAG_TASK_LIST = "taskmanager.fragments.TAG_TASK_LIST";
     public static final String TAG_POOL_TASK_LIST = "taskmanager.fragments.TAG_POOL_TASK_LIST";
     public static final String TAG_USER_TASK_LIST = "taskmanager.fragments.TAG_USER_TASK_LIST";
@@ -42,9 +41,6 @@ public class SpicedActivity extends AppCompatActivity implements NavigationView.
 
     @Bind(R.id.drawer_layout)
     DrawerLayout mDrawerLayout;
-
-    @Inject
-    public SpiceManager spiceManager;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,20 +61,6 @@ public class SpicedActivity extends AppCompatActivity implements NavigationView.
 //            }
         }
 
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        spiceManager.start(this);
-    }
-
-    @Override
-    public void onStop() {
-        if (spiceManager.isStarted()) {
-            spiceManager.shouldStop();
-        }
-        super.onStop();
     }
 
     @Override
@@ -165,8 +147,8 @@ public class SpicedActivity extends AppCompatActivity implements NavigationView.
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                InputMethodManager inputMethodManager = (InputMethodManager) SpicedActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
-                inputMethodManager.hideSoftInputFromWindow(SpicedActivity.this.getCurrentFocus().getWindowToken(), 0);
+                InputMethodManager inputMethodManager = (InputMethodManager) MainActivity.this.getSystemService(Activity.INPUT_METHOD_SERVICE);
+                inputMethodManager.hideSoftInputFromWindow(MainActivity.this.getCurrentFocus().getWindowToken(), 0);
             }
         };
 
