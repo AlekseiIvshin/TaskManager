@@ -1,6 +1,6 @@
 package com.alekseiivhsin.taskmanager.unit;
 
-import com.alekseiivhsin.taskmanager.functional.fragments.PoolMembersFragmentTest;
+import com.alekseiivhsin.taskmanager.fragments.PoolMembersFragmentTest;
 
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;

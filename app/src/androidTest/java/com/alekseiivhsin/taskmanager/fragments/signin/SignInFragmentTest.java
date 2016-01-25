@@ -1,4 +1,4 @@
-package com.alekseiivhsin.taskmanager.functional.fragments.signin;
+package com.alekseiivhsin.taskmanager.fragments.signin;
 
 import android.support.test.rule.ActivityTestRule;
 import android.support.test.runner.AndroidJUnit4;
@@ -6,9 +6,9 @@ import android.test.suitebuilder.annotation.LargeTest;
 
 import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.R;
-import com.alekseiivhsin.taskmanager.MainActivity;
+import com.alekseiivhsin.taskmanager.SpicedActivity;
 import com.alekseiivhsin.taskmanager.authentication.UserRights;
-import com.alekseiivhsin.taskmanager.functional.fragments.BaseSpicedInjectedFragmentTest;
+import com.alekseiivhsin.taskmanager.fragments.BaseSpicedInjectedFragmentTest;
 import com.alekseiivhsin.taskmanager.ioc.Graph;
 import com.alekseiivhsin.taskmanager.ioc.MockedGraph;
 import com.alekseiivhsin.taskmanager.ioc.StubNetworkModule;
@@ -44,6 +44,7 @@ import static org.hamcrest.Matchers.not;
 /**
  * Created on 18/12/2015.
  */
+@Ignore
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class SignInFragmentTest extends BaseSpicedInjectedFragmentTest {
@@ -54,8 +55,8 @@ public class SignInFragmentTest extends BaseSpicedInjectedFragmentTest {
     private static final ObjectMapper MAPPER = new ObjectMapper();
 
     @Rule
-    public ActivityTestRule<MainActivity> activityTestRule
-            = new ActivityTestRule<>(MainActivity.class);
+    public ActivityTestRule<SpicedActivity> activityTestRule
+            = new ActivityTestRule<>(SpicedActivity.class);
 
     @Before
     public void setUp() {

@@ -1,4 +1,4 @@
-package com.alekseiivhsin.taskmanager.functional.fragments;
+package com.alekseiivhsin.taskmanager.fragments;
 
 import android.support.v7.widget.RecyclerView;
 
@@ -20,7 +20,7 @@ import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.support.v4.SupportFragmentTestUtil;
 
-import static com.alekseiivhsin.taskmanager.functional.fragments.ShadowPoolSpiceManager.POOL_MEMBER_COUNT;
+import static com.alekseiivhsin.taskmanager.fragments.ShadowPoolSpiceManager.POOL_MEMBER_COUNT;
 import static com.alekseiivhsin.taskmanager.shadows.MyShadowAccountManager.STUB_SUCCESS_ACCOUNT_NAME;
 import static com.alekseiivhsin.taskmanager.shadows.MyShadowAccountManager.STUB_SUCCESS_AUTH_TOKEN;
 import static junit.framework.Assert.assertNotNull;

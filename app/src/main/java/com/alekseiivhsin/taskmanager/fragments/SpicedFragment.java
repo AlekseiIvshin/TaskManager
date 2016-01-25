@@ -1,4 +1,4 @@
-package com.alekseiivhsin.taskmanager.functional.fragments;
+package com.alekseiivhsin.taskmanager.fragments;
 
 import android.support.v4.app.Fragment;
 

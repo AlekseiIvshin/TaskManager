@@ -1,4 +1,4 @@
-package com.alekseiivhsin.taskmanager.functional.fragments;
+package com.alekseiivhsin.taskmanager.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;

@@ -1,4 +1,4 @@
-package com.alekseiivhsin.taskmanager.functional.fragments;
+package com.alekseiivhsin.taskmanager.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -14,9 +14,9 @@ import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.R;
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
 import com.alekseiivhsin.taskmanager.authentication.UserRights;
-import com.alekseiivhsin.taskmanager.network.requests.UserTaskListRequest;
-import com.alekseiivhsin.taskmanager.network.responses.UserTaskListResponse;
-import com.alekseiivhsin.taskmanager.views.adapters.UserTaskListAdapter;
+import com.alekseiivhsin.taskmanager.network.requests.PoolTaskListRequest;
+import com.alekseiivhsin.taskmanager.network.responses.PoolTaskListResponse;
+import com.alekseiivhsin.taskmanager.views.adapters.PoolTaskListAdapter;
 import com.octo.android.robospice.persistence.exception.SpiceException;
 import com.octo.android.robospice.request.listener.RequestListener;
 
@@ -27,10 +27,9 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class UserTaskListFragment extends SpicedFragment {
+public class PoolTaskListFragment extends SpicedFragment {
 
-    private static final String TAG = UserTaskListFragment.class.getSimpleName();
-
+    private static final String TAG = PoolTaskListFragment.class.getSimpleName();
 
     @Bind(R.id.list_tasks)
     RecyclerView mTasksList;
@@ -38,7 +37,7 @@ public class UserTaskListFragment extends SpicedFragment {
     @Bind(R.id.add_new_task)
     FloatingActionButton mAddNewTask;
 
-    UserTaskListAdapter mPoolTaskListAdapter;
+    PoolTaskListAdapter mPoolTaskListAdapter;
 
     @Inject
     AuthHelper mAuthHelper;
@@ -52,12 +51,12 @@ public class UserTaskListFragment extends SpicedFragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_user_task_list, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_pool_task_list, container, false);
         ButterKnife.bind(this, rootView);
 
         LinearLayoutManager layoutManager = new LinearLayoutManager(getActivity());
 
-        mPoolTaskListAdapter = new UserTaskListAdapter();
+        mPoolTaskListAdapter = new PoolTaskListAdapter();
         mTasksList.setLayoutManager(layoutManager);
         mTasksList.setAdapter(mPoolTaskListAdapter);
 
@@ -72,17 +71,17 @@ public class UserTaskListFragment extends SpicedFragment {
     public void onStart() {
         super.onStart();
 
-        UserTaskListRequest request = new UserTaskListRequest(mAuthHelper.getAuthToken());
-        spiceManager.execute(request, new RequestListener<UserTaskListResponse>() {
+        PoolTaskListRequest request = new PoolTaskListRequest(mAuthHelper.getAuthToken());
+        spiceManager.execute(request, new RequestListener<PoolTaskListResponse>() {
             @Override
             public void onRequestFailure(SpiceException spiceException) {
                 Log.v(TAG, "Error while load tasks ", spiceException);
-                mPoolTaskListAdapter.setTaskList(Collections.EMPTY_LIST);
+                mPoolTaskListAdapter.setTaskList(Collections.EMPTY_LIST, Collections.EMPTY_LIST);
             }
 
             @Override
-            public void onRequestSuccess(UserTaskListResponse poolTaskListResponse) {
-                mPoolTaskListAdapter.setTaskList(poolTaskListResponse.tasks);
+            public void onRequestSuccess(PoolTaskListResponse poolTaskListResponse) {
+                mPoolTaskListAdapter.setTaskList(poolTaskListResponse.assignedTasks, poolTaskListResponse.unassignedTasks);
             }
         });
 

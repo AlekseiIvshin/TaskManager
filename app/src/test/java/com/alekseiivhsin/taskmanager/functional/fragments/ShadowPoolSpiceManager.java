@@ -1,4 +1,4 @@
-package com.alekseiivhsin.taskmanager.functional.fragments;
+package com.alekseiivhsin.taskmanager.fragments;
 
 import com.alekseiivhsin.taskmanager.models.PoolMember;
 import com.alekseiivhsin.taskmanager.network.requests.PoolMembersRequest;
@@ -13,7 +13,6 @@ import org.robolectric.annotation.Implements;
 import org.robolectric.annotation.RealObject;
 
 import java.util.ArrayList;
-import java.util.List;
 
 import static com.alekseiivhsin.taskmanager.shadows.MyShadowAccountManager.STUB_SUCCESS_AUTH_TOKEN;
 
