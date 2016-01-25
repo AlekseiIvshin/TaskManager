@@ -1,6 +1,7 @@
 package com.alekseiivhsin.taskmanager.fragments;
 
 import android.support.test.espresso.Espresso;
+import android.util.Log;
 
 import com.alekseiivhsin.taskmanager.idlingresources.RobospiceIdlingResource;
 import com.octo.android.robospice.SpiceManager;
@@ -34,6 +35,7 @@ public abstract class BaseSpicedInjectedFragmentTest {
         onInitObjectGraph();
 
         robospiceIdlingResource = new RobospiceIdlingResource(getSpiceManager());
+
         Espresso.registerIdlingResources(robospiceIdlingResource);
     }
 

@@ -44,7 +44,6 @@ import static org.hamcrest.Matchers.not;
 /**
  * Created on 18/12/2015.
  */
-@Ignore
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class SignInFragmentTest extends BaseSpicedInjectedFragmentTest {

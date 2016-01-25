@@ -27,7 +27,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class UserTaskListFragment extends SpicedFragment {
+public class UserTaskListFragment extends BaseSpicedFragment {
 
     private static final String TAG = UserTaskListFragment.class.getSimpleName();
 

@@ -27,7 +27,7 @@ import butterknife.ButterKnife;
 /**
  * Created on 17/12/2015.
  */
-public class TaskDetailsFragment extends SpicedFragment {
+public class TaskDetailsFragment extends BaseSpicedFragment {
 
     public static final String EXTRA_TASK_ID = "taskmanager.extras.EXTRA_TASK_ID";
 

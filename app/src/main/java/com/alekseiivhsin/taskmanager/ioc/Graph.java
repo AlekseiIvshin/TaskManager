@@ -7,7 +7,6 @@ import com.alekseiivhsin.taskmanager.authentication.AuthTokenLoader;
 import com.alekseiivhsin.taskmanager.fragments.PoolMembersFragment;
 import com.alekseiivhsin.taskmanager.fragments.PoolTaskListFragment;
 import com.alekseiivhsin.taskmanager.fragments.SignInFragment;
-import com.alekseiivhsin.taskmanager.fragments.SpicedFragment;
 import com.alekseiivhsin.taskmanager.fragments.TaskDetailsFragment;
 import com.alekseiivhsin.taskmanager.fragments.UserTaskListFragment;
 import com.alekseiivhsin.taskmanager.network.requests.PoolMembersRequest;

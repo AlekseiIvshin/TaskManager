@@ -134,7 +134,6 @@ public class TaskDetailsFragmentTest extends BaseSpicedInjectedFragmentTest {
                                 withText(stubDeadlineTime.toString("dd/MM/yyyy HH:mm")))));
     }
 
-    @Ignore
     @Test
     public void onLoad_shouldShowEditWhenLoggedAsLead() throws IOException {
         // Given
@@ -150,7 +149,6 @@ public class TaskDetailsFragmentTest extends BaseSpicedInjectedFragmentTest {
         onView(withId(R.id.edit_task)).check(matches(isDisplayed()));
     }
 
-    @Ignore
     @Test
     public void onLoad_shouldHideEditWhenLoggedAsMember() throws IOException {
         // Given

@@ -46,7 +46,6 @@ import static org.mockito.Mockito.when;
 /**
  * Created on 21/12/2015.
  */
-@Ignore
 @LargeTest
 @RunWith(AndroidJUnit4.class)
 public class TaskListFragmentTest extends BaseSpicedInjectedFragmentTest {

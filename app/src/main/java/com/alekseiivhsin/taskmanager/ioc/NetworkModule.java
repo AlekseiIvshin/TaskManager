@@ -1,5 +1,8 @@
 package com.alekseiivhsin.taskmanager.ioc;
 
+import android.util.Log;
+
+import com.alekseiivhsin.taskmanager.App;
 import com.alekseiivhsin.taskmanager.robospice.TaskSpiceService;
 import com.octo.android.robospice.SpiceManager;
 

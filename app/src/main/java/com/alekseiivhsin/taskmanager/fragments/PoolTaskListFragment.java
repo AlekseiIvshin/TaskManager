@@ -27,7 +27,7 @@ import javax.inject.Inject;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 
-public class PoolTaskListFragment extends SpicedFragment {
+public class PoolTaskListFragment extends BaseSpicedFragment {
 
     private static final String TAG = PoolTaskListFragment.class.getSimpleName();
 

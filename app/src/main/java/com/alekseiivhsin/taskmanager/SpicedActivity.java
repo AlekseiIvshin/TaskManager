@@ -68,6 +68,20 @@ public class SpicedActivity extends AppCompatActivity implements NavigationView.
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        spiceManager.start(this);
+    }
+
+    @Override
+    public void onStop() {
+        if (spiceManager.isStarted()) {
+            spiceManager.shouldStop();
+        }
+        super.onStop();
+    }
+
+    @Override
     protected void onDestroy() {
         mDrawerLayout.setDrawerListener(null);
         super.onDestroy();

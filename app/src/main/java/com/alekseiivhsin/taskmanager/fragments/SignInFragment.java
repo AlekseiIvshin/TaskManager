@@ -30,7 +30,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class SignInFragment extends SpicedFragment {
+public class SignInFragment extends BaseSpicedFragment {
 
     public static final String EXTRA_IS_ADDING_NEW_ACCOUNT = "EXTRA_IS_ADDING_NEW_ACCOUNT";
     private static final String TAG = SignInFragment.class.getSimpleName();
