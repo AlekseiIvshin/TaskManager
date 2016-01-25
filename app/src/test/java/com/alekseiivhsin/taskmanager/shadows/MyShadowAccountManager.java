@@ -14,22 +14,22 @@ import org.robolectric.shadows.ShadowAccountManager;
 @Implements(AccountManager.class)
 public class MyShadowAccountManager extends ShadowAccountManager {
 
-    public static final String STUB_SUCCESS_ACCOUNT_NAME = "STUB_SUCCESS_ACCOUNT_NAME";
-    public static final String STUB_FAILURE_ACCOUNT_NAME = "STUB_FAILURE_ACCOUNT_NAME";
+    public static final String STUB_ACCOUNT_NAME = "STUB_ACCOUNT_NAME";
 
-    public static final String STUB_SUCCESS_AUTH_TOKEN = "STUB_SUCCESS_AUTH_TOKEN";
-    public static final String STUB_FAILURE_AUTH_TOKEN = "STUB_FAILURE_AUTH_TOKEN";
+    public static final String STUB_AUTH_TOKEN = "STUB_AUTH_TOKEN";
+
+    @Override
+    @Implementation
+    public Account[] getAccountsByType(String type) {
+        return new Account[]{new Account(STUB_ACCOUNT_NAME, type)};
+    }
 
     @Override
     @Implementation
     public String getUserData(Account account, String key) {
         switch (key) {
             case AccountManager.KEY_AUTHTOKEN:
-                if (STUB_SUCCESS_ACCOUNT_NAME.equals(account.name)) {
-                    return STUB_SUCCESS_AUTH_TOKEN;
-                } else {
-                    return STUB_FAILURE_AUTH_TOKEN;
-                }
+                return STUB_AUTH_TOKEN;
             default:
                 throw new IllegalArgumentException("No such user data: " + key);
         }

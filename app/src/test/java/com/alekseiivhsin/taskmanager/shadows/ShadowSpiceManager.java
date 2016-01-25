@@ -11,7 +11,7 @@ import org.robolectric.annotation.Implementation;
 import org.robolectric.annotation.Implements;
 import org.robolectric.annotation.RealObject;
 
-import static com.alekseiivhsin.taskmanager.shadows.MyShadowAccountManager.STUB_SUCCESS_AUTH_TOKEN;
+import static com.alekseiivhsin.taskmanager.shadows.MyShadowAccountManager.STUB_AUTH_TOKEN;
 
 /**
  * Created by Aleksei Ivshin
@@ -36,7 +36,7 @@ public class ShadowSpiceManager {
 
     @Implementation
     public void execute(final PoolMembersRequest request, final RequestListener<PoolMembersResponse> requestListener) {
-        if (STUB_SUCCESS_AUTH_TOKEN.equals(request.authToken)) {
+        if (STUB_AUTH_TOKEN.equals(request.authToken)) {
             requestListener.onRequestSuccess(new PoolMembersResponse());
         } else {
             requestListener.onRequestFailure(new SpiceException("SHADOW EXCEPTION"));

@@ -9,11 +9,11 @@
     <string name="accountType">com.alivshin.taskmanager</string>
     <string name="error.login.empty">User name should not be empty</string>
     <string name="error.password.empty">Password should not be empty</string>
-    <string name="drawer.task.list.pool">Tasks list</string>
+    <string name="drawer.task.list.pool">Pool tasks</string>
     <string name="drawer.task.list.user">My tasks</string>
     <string name="drawer.pool.list">Pool</string>
-    <string name="authTokenType">taskmanager.authTokenType</string>
     <string name="drawer.logout">Logout</string>
+    <string name="authTokenType">taskmanager.authTokenType</string>
     <string name="navigation_drawer.open">Open</string>
     <string name="navigation_drawer.close">Close</string>
     <string name="error.message.default">Unknown error occured</string>

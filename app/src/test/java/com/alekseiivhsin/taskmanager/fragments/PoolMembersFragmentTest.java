@@ -7,7 +7,6 @@ import com.alekseiivhsin.taskmanager.BuildConfig;
 import com.alekseiivhsin.taskmanager.R;
 import com.alekseiivhsin.taskmanager.SpicedActivity;
 import com.alekseiivhsin.taskmanager.authentication.AuthHelper;
-import com.alekseiivhsin.taskmanager.authentication.UserRights;
 import com.alekseiivhsin.taskmanager.shadows.MyRobolectricRunner;
 import com.alekseiivhsin.taskmanager.shadows.MyShadowAccountManager;
 
@@ -18,12 +17,9 @@ import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
 import org.robolectric.RuntimeEnvironment;
 import org.robolectric.annotation.Config;
-import org.robolectric.shadows.support.v4.SupportFragmentTestUtil;
 
 import static com.alekseiivhsin.taskmanager.SpicedActivity.TAG_POOL_MEMBERS;
 import static com.alekseiivhsin.taskmanager.fragments.ShadowPoolSpiceManager.POOL_MEMBER_COUNT;
-import static com.alekseiivhsin.taskmanager.shadows.MyShadowAccountManager.STUB_SUCCESS_ACCOUNT_NAME;
-import static com.alekseiivhsin.taskmanager.shadows.MyShadowAccountManager.STUB_SUCCESS_AUTH_TOKEN;
 import static junit.framework.Assert.assertNotNull;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.hamcrest.core.Is.is;
@@ -56,10 +52,6 @@ public class PoolMembersFragmentTest {
 
     @Test
     public void onLoad_shouldLoadPoolMemberList() {
-        // Given
-        mAuthHelper.addAccount(mAuthHelper.createNewAccount(STUB_SUCCESS_ACCOUNT_NAME),
-                STUB_ACCOUNT_PASSWORD, STUB_SUCCESS_AUTH_TOKEN, UserRights.NONE);
-
         // When
         spicedActivity.replaceFragment(new PoolMembersFragment(), TAG_POOL_MEMBERS);
 

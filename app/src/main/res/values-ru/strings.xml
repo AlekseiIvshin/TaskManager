@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="drawer.task.list.pool">Задачи группы</string>
+    <string name="drawer.task.list.user">Мои задачи</string>
+    <string name="drawer.pool.list">Группа</string>
+    <string name="drawer.logout">Выход</string>
+</resources>
