@@ -23,7 +23,6 @@ import static com.alekseiivhsin.taskmanager.shadows.MyShadowAccountManager.STUB_
 @Implements(SpiceManager.class)
 public class ShadowPoolSpiceManager {
 
-    private static final String TAG = ShadowPoolSpiceManager.class.getSimpleName();
     public static final int POOL_MEMBER_COUNT = 3;
 
     @RealObject

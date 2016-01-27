@@ -36,11 +36,7 @@ import static org.hamcrest.core.Is.is;
         shadows = {ShadowPoolSpiceManager.class, MyShadowAccountManager.class})
 public class PoolMembersFragmentTest {
 
-    private final String STUB_ACCOUNT_PASSWORD = "STUB_ACCOUNT_PASSWORD";
-    private final String STUB_AUTH_TOKEN = "STUB_AUTH_TOKEN";
-
     AuthHelper mAuthHelper;
-
 
     SpicedActivity spicedActivity;
 
