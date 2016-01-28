@@ -13,12 +13,6 @@ import dagger.Component;
 @Component(modules = MockAuthModule.class)
 public interface MockedGraph extends Graph {
 
-    final class MockedInitializer {
-        public static Graph init(MockAuthModule mockModule) {
-            return DaggerGraph.builder().authModule(mockModule).build();
-        }
-    }
-
     class MockGraphBuilder {
 
         NetworkModule stubNetworkModule;

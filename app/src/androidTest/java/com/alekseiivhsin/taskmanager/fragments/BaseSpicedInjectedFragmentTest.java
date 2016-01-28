@@ -35,8 +35,8 @@ public abstract class BaseSpicedInjectedFragmentTest {
         onInitObjectGraph();
 
         robospiceIdlingResource = new RobospiceIdlingResource(getSpiceManager());
-
         Espresso.registerIdlingResources(robospiceIdlingResource);
+
     }
 
     @After
