@@ -35,9 +35,6 @@ public class RobospiceIdlingResource implements IdlingResource {
     }
 
     private boolean idle() {
-        Log.v(TAG,
-                String.format("Is idling: (spiceManager == null)=>%b; (!spiceManager.isStarted())=>%b; (spiceManager.getPendingRequestCount() == 0)=>%b",
-                        spiceManager == null, !spiceManager.isStarted(), spiceManager.getPendingRequestCount() == 0) );
         return spiceManager == null || !spiceManager.isStarted() || spiceManager.getPendingRequestCount() == 0;
     }
 

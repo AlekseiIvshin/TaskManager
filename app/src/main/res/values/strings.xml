@@ -20,4 +20,6 @@
     <string name="header.tasks.assigned">Assigned</string>
     <string name="header.tasks.unassigned">Unassigned</string>
     <string name="deadline_format">dd/MM/yyyy HH:mm</string>
+    <string name="hello_test">Hello Test!</string>
+    <string name="click_me">Click me!</string>
 </resources>

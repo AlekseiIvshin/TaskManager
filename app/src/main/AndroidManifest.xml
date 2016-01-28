@@ -37,6 +37,8 @@
         </service>
 
         <activity android:name=".authentication.AuthenticatorActivity" />
+        
+        <activity android:name=".HelloTestActivity" />
 
         <service
             android:name=".robospice.TaskSpiceService"
